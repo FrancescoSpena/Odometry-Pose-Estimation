@@ -54,7 +54,7 @@ void Encoder_sample(void){
 /**
  * Get sampled values from encoders
  **/
-int16_t Encoder_getValue(uint8_t idx){
+uint16_t Encoder_getValue(uint8_t idx){
     return _encoder_sampled_value[idx];
 }
 
@@ -88,10 +88,10 @@ static const int8_t _transition_table[] = {
 ISR(PCINT0_vect){
     cli();
     uint8_t port_value=PINB&ENCODER_MASK;
-    register uint8_t c_value=port_value;
-    register uint8_t prev_value=_encoder_status;
+    register uint8_t c_value=port_value;                    //valore che stai leggendo
+    register uint8_t prev_value=_encoder_status;            //valore precedente
     register const int8_t* ttable =_transition_table;
-    register uint16_t* curr_enc=_encoder_current_value;
+    register uint16_t* curr_enc=_encoder_current_value;     //valore print encoder
     for(uint8_t i=0; i < NUM_ENCODERS; ++i){
         //build the following data:
         // first 2 bits of prev_value | first 2 bits of c_value 

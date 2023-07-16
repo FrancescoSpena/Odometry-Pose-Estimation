@@ -19,7 +19,7 @@ void Encoder_sample(void);
 /**
  * Get sampled values from encoders
  **/
-int16_t Encoder_getValue(uint8_t idx);
+uint16_t Encoder_getValue(uint8_t idx);
 
 /**
  * Get the number of encoders attached to the MCU
