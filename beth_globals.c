@@ -4,6 +4,8 @@
 
 #include "beth_globals.h"
 
+//Modificato per test PID (normalmente sono init)
+
 MotorControlPacket motor_control = {
     //header
     {
@@ -14,8 +16,8 @@ MotorControlPacket motor_control = {
         .src_addr=0,
         .checksum=0,
     },
-    .mode=0,
-    .speed=0
+    .mode=Pid,
+    .speed=150
 };
 
 MotorStatusPacket motor_status = {
