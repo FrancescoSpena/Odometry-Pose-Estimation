@@ -1,4 +1,3 @@
-# set this to false to disable sonars in firmware
 CC=avr-gcc
 AS=avr-gcc
 INCLUDE_DIRS=-I. -I../avr_common
@@ -6,9 +5,7 @@ CC_OPTS=-Wall --std=gnu99 -DF_CPU=16000000UL -O3 -funsigned-char -funsigned-bitf
 AS_OPTS=-x assembler-with-cpp $(CC_OPTS)
 
 AVRDUDE=avrdude
-
-# com1 = serial port. Use lpt1 to connect to parallel port.
-AVRDUDE_PORT = /dev/ttyACM0    # programmer connected to serial device
+AVRDUDE_PORT = /dev/ttyACM0    
 
 AVRDUDE_WRITE_FLASH = -U flash:w:$(TARGET):i
 AVRDUDE_FLAGS = -p m2560 -P $(AVRDUDE_PORT) -c $(AVRDUDE_PROGRAMMER) -b 115200
@@ -22,7 +19,6 @@ AVRDUDE_FLAGS += -c wiring
 
 all:	$(BINS) 
 
-#common objects
 %.o:	%.c 
 	$(CC) $(CC_OPTS) -c  -o $@ $<
 
