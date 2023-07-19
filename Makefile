@@ -29,10 +29,10 @@ BINS=diff_encoder.elf
 
 # put here the additional .o files you want to generate
 # one .c file for each .o should be present
-OBJS=uart.o pins.o digio.o pwm.o encoder.o
+OBJS=uart.o pins.o digio.o pwm.o encoder.o beth_joint_internal.o
 
 # put here the additional header files needed for compilation
-HEADERS=uart.h pins.h digio.h pwm.h encoder.h
+HEADERS=uart.h pins.h digio.h pwm.h encoder.h beth_packets.h beth_joint.h beth_joint_internal.h
 
 
 # the file below contains the actual rules
