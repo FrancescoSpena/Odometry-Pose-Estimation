@@ -9,130 +9,145 @@
 //Create a mapping 1:1 with arduino'pins
 
 Pin _pins[] = {
-  {// 0
-    .r_ddr=&DDRE,
-    .r_port=&PORTE,
-    .r_pin=&PINE,
-    .pin=0,
+  //0 --> 28
+  {
+    .r_ddr=&PINA,
+    .r_port=&PORTA,
+    .r_pin=&DDRA,
+    .pin=6,
     .tccr=0,
     .ocr=0,
-    .mask=0,    
+    .mask=0
   },
-  {// 1
+  //1
+  {
     .r_ddr=&DDRE,
     .r_port=&PORTE,
     .r_pin=&PINE,
     .pin=1,
     .tccr=0,
     .ocr=0,
-    .mask=0,
+    .mask=0
   },
-  {// 2
+  //2
+  {//TCCR3B, OCR3B, WGM33
     .r_ddr=&DDRE,
     .r_port=&PORTE,
     .r_pin=&PINE,
     .pin=4,
-    .tccr=0,
-    .ocr=0,
-    .mask=0,
+    .tccr=&TCCR3A,
+    .ocr=&OCR3BL,
+    .mask=(1<<COM3B0)|(1<<COM3B1)
   },
-  {// 3
+  //3
+  {
     .r_ddr=&DDRE,
     .r_port=&PORTE,
     .r_pin=&PINE,
     .pin=5,
-    .tccr=0,
-    .ocr=0,
-    .mask=0,
+    .tccr=&TCCR3A,
+    .ocr=&OCR3CL,
+    .mask=(1<<COM3C0)|(1<<COM3C1)
   },
-  {// 4
+  //4
+  {
     .r_ddr=&DDRG,
     .r_port=&PORTG,
     .r_pin=&PING,
     .pin=5,
     .tccr=&TCCR0A,
     .ocr=&OCR0B,
-    .mask=(1<<COM0B1),
+    .mask=(1<<COM0B0)|(1<<COM0B1)
   },
-  {// 5
+  //5
+  {
     .r_ddr=&DDRE,
     .r_port=&PORTE,
     .r_pin=&PINE,
     .pin=3,
-    .tccr=0,
-    .ocr=0,
-    .mask=0,
+    .tccr=&TCCR3A,
+    .ocr=&OCR3AL,
+    .mask=(1<<COM3A0)|(1<<COM3A1)
   },
-  {// 6
+  //6
+  {
     .r_ddr=&DDRH,
     .r_port=&PORTH,
     .r_pin=&PINH,
     .pin=3,
-    .tccr=0,
-    .ocr=0,
-    .mask=0,
+    .tccr=&TCCR4A,
+    .ocr=&OCR4AL,
+    .mask=(1<<COM4A0)|(1<<COM4A1)
   },
-  {// 7
+  //7
+  {
     .r_ddr=&DDRH,
     .r_port=&PORTH,
     .r_pin=&PINH,
     .pin=4,
-    .tccr=0,
-    .ocr=0,
-    .mask=0,
+    .tccr=&TCCR4A,
+    .ocr=&OCR4BL,
+    .mask=(1<<COM4B0)|(1<<COM4B1)
   },
-  {// 8
+  //8
+  {
     .r_ddr=&DDRH,
     .r_port=&PORTH,
     .r_pin=&PINH,
     .pin=5,
-    .tccr=0,
-    .ocr=0,
-    .mask=0,
+    .tccr=&TCCR4A,
+    .ocr=&OCR4CL,
+    .mask=(1<<COM4C0)|(1<<COM4C1)
   },
-  {// 9
+  //9
+  {
     .r_ddr=&DDRH,
     .r_port=&PORTH,
     .r_pin=&PINH,
     .pin=6,
     .tccr=&TCCR2A,
     .ocr=&OCR2B,
-    .mask=1<<COM2B1,
+    .mask=(1<<COM2B0)|(1<<COM2B1)
   },
-  {// 10
+  //10
+  {
     .r_ddr=&DDRB,
     .r_port=&PORTB,
     .r_pin=&PINB,
     .pin=4,
     .tccr=&TCCR2A,
     .ocr=&OCR2A,
-    .mask=1<<COM2A1,
+    .mask=(1<<COM2A0)|(1<<COM2A1)
   },
-  {// 11
+  //11
+  {
     .r_ddr=&DDRB,
     .r_port=&PORTB,
     .r_pin=&PINB,
     .pin=5,
-    .tccr=0,
-    .ocr=0,
-    .mask=0,
+    .tccr=&TCCR1A,
+    .ocr=&OCR1AL,
+    .mask=(1<<COM1A0)|(1<<COM1A1)
   },
-  {// 12
+  //12
+  {
     .r_ddr=&DDRB,
     .r_port=&PORTB,
     .r_pin=&PINB,
     .pin=6,
-    .tccr=0,
-    .ocr=0,
-    .mask=0,
+    .tccr=&TCCR1A,
+    .ocr=&OCR1BL,
+    .mask=(1<<COM1B0)|(1<<COM1B1)
   },
-  {// 13
+  //13
+  { //TCCR0A, OCR0A, COM0A1
     .r_ddr=&DDRB,
     .r_port=&PORTB,
     .r_pin=&PINB,
     .pin=7,
     .tccr=&TCCR0A,
     .ocr=&OCR0A,
-    .mask=(1<<COM0A1),
+    .mask=(1<<COM0A1)
   }
 };
+

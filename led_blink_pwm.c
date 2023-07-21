@@ -8,18 +8,25 @@
 #include "pins.h"
 #include "digio.h"
 
+#define PIN 9
+
+//9 ok, 13 ok (con mio setting), 10 ok, 4 ok
+
+//12 no ok, 11 no ok, 8 no ok, 7 no ok
+//6 no ok, 5 no ok, 3 no ok, 2 no ok
+
 int main(void){
     printf_init();
     PWM_init();
 
-    digio_configurePin(13,Output);
-    PWM_enablePin(13);
+    digio_configurePin(PIN,Output);
+    PWM_enablePin(PIN);
 
     uint8_t intensity = 0;
     while(1){
-        PWM_setOutput(13,intensity);
+        PWM_setOutput(PIN,intensity);
         printf("intensity led = %u\n",intensity);
-        _delay_ms(500);
-        intensity+=10;
+        _delay_ms(200);
+        intensity+=15;
     }
 }
