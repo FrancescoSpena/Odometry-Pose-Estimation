@@ -17,7 +17,7 @@ MotorControlPacket motor_control = {
         .checksum=0,
     },
     .mode=Pid,
-    .speed=255
+    .speed=150
 };
 
 MotorStatusPacket motor_status = {

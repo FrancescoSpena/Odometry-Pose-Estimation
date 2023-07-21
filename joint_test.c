@@ -10,6 +10,15 @@
 #include "encoder.h"
 #include "beth_joint.h"
 
+#define PWM1 4
+#define PWM2 9
+
+/**
+ * Encoder --> pin 13,12 
+ * Motor1 --> dir_a=5, dir_b=6, pwm=4
+ * Motor2 --> dir_a=7, dir_b=8, pwm=9
+*/
+
 int main(void){
 
     printf_init();
@@ -17,18 +26,16 @@ int main(void){
     Encoder_init();
     printf("Encoder init\n");
     BethJoints_init();
-    //PWM_init();
+    PWM_init();
 
-    digio_configurePin(6,Output);
-    digio_configurePin(5,Output);
-    digio_configurePin(4,Output);
+    PWM_enablePin(PWM1);
+    PWM_enablePin(PWM2);
+    printf("Enable pin for PWM\n");
+
 
     printf("Go\n");
     while(1){
-        Encoder_sample();
-        printf("Val encoder = %u\n", Encoder_getValue(3));
-        digio_setPin(6,1);
-        digio_setPin(5,0);
-        digio_setPin(3,1);
+        printf("Val encoder = %d\n", Encoder_getValue(3));
+        BethJoints_handle();
     }
 }
