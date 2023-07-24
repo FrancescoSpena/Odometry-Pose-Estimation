@@ -7,10 +7,16 @@
 #include "pwm.h"
 #include "encoder.h"
 
+#include "uart.h"
+#include <stdio.h>
+
+
 void BethJoint_init(BethJoint* j, MotorControlPacket* _control,
                     MotorStatusPacket* _status,
                     MotorParamsPacket* _params,
                     uint8_t _eidx){
+    printf("Qui\n");
+    
     j->control=_control;
     j->status=_status;
     j->params=_params;
@@ -26,6 +32,8 @@ void BethJoint_init(BethJoint* j, MotorControlPacket* _control,
     digio_setPin(j->params->dir_a_pin,0);
     digio_configurePin(j->params->dir_b_pin,Output);
     digio_setPin(j->params->dir_b_pin,0);
+
+    printf("Set all pin\n");
     return;
 }
 
@@ -47,11 +55,15 @@ void BethJoint_handle(BethJoint* j){
     if(j->control->mode == Disable)
         return;
     if(j->control->mode == Pid){
+        //printf("PID section\n");
         //PID mode 
         static int16_t perror;
         j->status->desired_speed=j->control->speed;
+        //printf("Desidered speed = %d\n", j->status->desired_speed);
         int16_t error = j->status->desired_speed - j->status->measured_speed;
         int16_t output = 0;
+
+        printf("Speed = %d\n", j->status->measured_speed);
 
         j->params->sum_i += j->params->ki * error * j->params->dt;
         j->params->sum_i = clamp(j->params->sum_i,j->params->max_i);
@@ -68,10 +80,19 @@ void BethJoint_handle(BethJoint* j){
         j->dir = dir;
         j->output = speed;
 
+        //printf("Dir = %d\n", j->dir);
+        //printf("Output = %d\n", j->output);
+
+        //printf("Pin A = %d\t Pin B = %d\t Pin PWM = %d\n", j->params->dir_a_pin, j->params->dir_b_pin, j->params->pwm_pin);
+
+
         digio_setPin(j->params->dir_a_pin, j->dir);
         digio_setPin(j->params->dir_b_pin,!j->dir);
-        PWM_setOutput(j->params->pwm_pin,j->output);
+        PWM_setOutput(j->params->pwm_pin,255);
+        //printf("Set all\n");
         perror=error;
+        //printf("Error = %d\n", error);
+        
         return;
     }
     if(j->control->mode == Direct){

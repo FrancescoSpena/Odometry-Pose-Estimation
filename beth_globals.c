@@ -17,7 +17,7 @@ MotorControlPacket motor_control = {
         .checksum=0,
     },
     .mode=Pid,
-    .speed=150
+    .speed=100  
 };
 
 MotorStatusPacket motor_status = {
@@ -45,11 +45,10 @@ MotorParamsPacket motor1_params = {
         .src_addr=0,
         .checksum=0,
     },
-    //Cambiare rispetto arduino
     .dir_a_pin=5, 
     .dir_b_pin=6,
     .pwm_pin=4,
-    //Fare un tuning
+    //PID
     .kp=5,
     .ki=30,
     .kd=0,

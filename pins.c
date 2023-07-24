@@ -9,7 +9,7 @@
 //Create a mapping 1:1 with arduino'pins
 
 Pin _pins[] = {
-  //0 --> 28
+  //0 
   {
     .r_ddr=&PINA,
     .r_port=&PORTA,
@@ -65,9 +65,9 @@ Pin _pins[] = {
     .r_port=&PORTE,
     .r_pin=&PINE,
     .pin=3,
-    .tccr=&TCCR3A,
-    .ocr=&OCR3AL,
-    .mask=(1<<COM3A0)|(1<<COM3A1)
+    .tccr=0,
+    .ocr=0,
+    .mask=0
   },
   //6
   {

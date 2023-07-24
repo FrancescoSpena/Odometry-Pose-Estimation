@@ -22,11 +22,11 @@ int main(void){
     digio_configurePin(PIN,Output);
     PWM_enablePin(PIN);
 
-    uint8_t intensity = 0;
+    uint8_t intensity = 150;
     while(1){
         PWM_setOutput(PIN,intensity);
-        printf("intensity led = %u\n",intensity);
-        _delay_ms(50);
-        intensity+=20;
+        //printf("intensity led = %u\n",intensity);
+        //_delay_ms(50);
+        //intensity+=20;
     }
 }

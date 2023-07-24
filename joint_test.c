@@ -20,22 +20,12 @@
 */
 
 int main(void){
-
     printf_init();
-    printf("Print init\n");
-    Encoder_init();
-    printf("Encoder init\n");
     BethJoints_init();
-    PWM_init();
 
-    PWM_enablePin(PWM1);
-    PWM_enablePin(PWM2);
-    printf("Enable pin for PWM\n");
-
-
-    printf("Go\n");
     while(1){
-        printf("Val encoder = %d\n", Encoder_getValue(3));
+        //Encoder_sample();
+        //printf("Encoder value = %d\n", Encoder_getValue(3));
         BethJoints_handle();
     }
 }

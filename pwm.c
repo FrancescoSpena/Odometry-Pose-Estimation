@@ -30,6 +30,6 @@ void PWM_setOutput(uint8_t pin, uint8_t pwm){
         return;
     if(pwm > 255)
         pwm=255;
-    *(_pins[pin].ocr)=pwm;
+    *(_pins[pin].ocr)=255-pwm;
     return;
 }
