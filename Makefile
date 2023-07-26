@@ -25,14 +25,14 @@
 # to be uploaded on the avr
 # you can add multiple files, they will be all generated
 
-BINS=joint_test.elf 
+BINS=test_timer.elf 
 
 # put here the additional .o files you want to generate
 # one .c file for each .o should be present
-OBJS=uart.o pins.o digio.o pwm.o encoder.o beth_joint_internal.o beth_joint.o beth_globals.o
+OBJS=uart.o pins.o digio.o pwm.o encoder.o beth_joint_internal.o beth_joint.o beth_globals.o timer.o
 
 # put here the additional header files needed for compilation
-HEADERS=uart.h pins.h digio.h pwm.h encoder.h beth_packets.h beth_joint.h beth_joint_internal.h beth_globals.h
+HEADERS=uart.h pins.h digio.h pwm.h encoder.h beth_packets.h beth_joint.h beth_joint_internal.h beth_globals.h timer.h
 
 
 # the file below contains the actual rules
