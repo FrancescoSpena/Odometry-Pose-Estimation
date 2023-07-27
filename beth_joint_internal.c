@@ -15,8 +15,7 @@ void BethJoint_init(BethJoint* j, MotorControlPacket* _control,
                     MotorStatusPacket* _status,
                     MotorParamsPacket* _params,
                     uint8_t _eidx){
-    printf("Qui\n");
-    
+
     j->control=_control;
     j->status=_status;
     j->params=_params;
@@ -33,7 +32,6 @@ void BethJoint_init(BethJoint* j, MotorControlPacket* _control,
     digio_configurePin(j->params->dir_b_pin,Output);
     digio_setPin(j->params->dir_b_pin,0);
 
-    printf("Set all pin\n");
     return;
 }
 
@@ -55,8 +53,6 @@ void BethJoint_handle(BethJoint* j){
     if(j->control->mode == Disable)
         return;
     if(j->control->mode == Pid){
-        //printf("PID section\n");
-        //PID mode 
         static int16_t perror;
         j->status->desired_speed=j->control->speed;
         //printf("Desidered speed = %d\n", j->status->desired_speed);
@@ -88,11 +84,9 @@ void BethJoint_handle(BethJoint* j){
 
         digio_setPin(j->params->dir_a_pin, j->dir);
         digio_setPin(j->params->dir_b_pin,!j->dir);
-        PWM_setOutput(j->params->pwm_pin,255);
-        //printf("Set all\n");
+        PWM_setOutput(j->params->pwm_pin,j->output);
+
         perror=error;
-        //printf("Error = %d\n", error);
-        
         return;
     }
     if(j->control->mode == Direct){

@@ -3,6 +3,8 @@
 */
 
 #include "beth_drive_internal.h"
+#include "uart.h"
+#include "stdio.h"
 
 void DifferentialDriveController_init(DifferentialDriveController* ctr,
                                       DifferentialDriveParamPacket* params,
@@ -43,6 +45,8 @@ void DifferentialDriveController_control(DifferentialDriveController* ctr){
     //Write to the single motor 
     ctr->control_right->speed=total_right;
     ctr->control_left->speed=total_left;
+
+    
 }
 
 void DifferentialDriveController_reset(DifferentialDriveController* ctr,

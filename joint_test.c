@@ -9,9 +9,8 @@
 #include "digio.h"
 #include "encoder.h"
 #include "beth_joint.h"
+#include "beth_drive.h"
 
-#define PWM1 4
-#define PWM2 9
 
 /**
  * Encoder --> pin 13,12 
@@ -22,10 +21,14 @@
 int main(void){
     printf_init();
     BethJoints_init();
+    //BethDrive_init();
+
+    //BethDrive_handle();
 
     while(1){
         //Encoder_sample();
-        //printf("Encoder value = %d\n", Encoder_getValue(3));
         BethJoints_handle();
+        //printf("Encoder 1 = %d\t Encoder 2 = %d\n", Encoder_getValue(3),Encoder_getValue(2));
+        
     }
 }

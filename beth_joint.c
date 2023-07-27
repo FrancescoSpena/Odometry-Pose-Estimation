@@ -11,7 +11,6 @@
 void BethJoints_init(void){
     Encoder_init();
     BethJoint_init(&joints[0],&motor1_control, &motor1_status, &motor1_params, 3);
-    //Previsto anche un secondo motore, controllare indici encoder
     BethJoint_init(&joints[1],&motor2_control, &motor2_status, &motor2_params, 2);
     return;
 }

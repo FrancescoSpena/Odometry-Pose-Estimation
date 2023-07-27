@@ -6,7 +6,7 @@
 #include <avr/io.h> 
 #include <avr/interrupt.h> 
 
-#define NUM_ENCODERS 4
+#define NUM_ENCODERS 4 //num pin
 
 //all port B is used to handle 4 encoders --> pin 13,12,11,10  
 #define ENCODER_MASK 0xFF
