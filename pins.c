@@ -49,7 +49,7 @@ Pin _pins[] = {
     .ocr=&OCR3CL,
     .mask=(1<<COM3C0)|(1<<COM3C1)
   },
-  //4
+  //4 usato per pwm (funziona)
   {
     .r_ddr=&DDRG,
     .r_port=&PORTG,
@@ -75,9 +75,9 @@ Pin _pins[] = {
     .r_port=&PORTH,
     .r_pin=&PINH,
     .pin=3,
-    .tccr=&TCCR4A,
-    .ocr=&OCR4AL,
-    .mask=(1<<COM4A0)|(1<<COM4A1)
+    .tccr=0,
+    .ocr=0,
+    .mask=0
   },
   //7
   {
@@ -85,9 +85,9 @@ Pin _pins[] = {
     .r_port=&PORTH,
     .r_pin=&PINH,
     .pin=4,
-    .tccr=&TCCR4A,
-    .ocr=&OCR4BL,
-    .mask=(1<<COM4B0)|(1<<COM4B1)
+    .tccr=0,
+    .ocr=0,
+    .mask=0
   },
   //8
   {
@@ -95,11 +95,11 @@ Pin _pins[] = {
     .r_port=&PORTH,
     .r_pin=&PINH,
     .pin=5,
-    .tccr=&TCCR4A,
-    .ocr=&OCR4CL,
-    .mask=(1<<COM4C0)|(1<<COM4C1)
+    .tccr=0,
+    .ocr=0,
+    .mask=0
   },
-  //9
+  //9 usato per pwm (funziona)
   {
     .r_ddr=&DDRH,
     .r_port=&PORTH,

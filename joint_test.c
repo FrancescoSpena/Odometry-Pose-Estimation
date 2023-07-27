@@ -21,9 +21,10 @@
 int main(void){
     printf_init();
     BethJoints_init();
-    //BethDrive_init();
 
-    //BethDrive_handle();
+    BethDrive_init();
+
+    BethDrive_handle();
 
     while(1){
         //Encoder_sample();

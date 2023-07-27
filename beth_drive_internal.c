@@ -27,6 +27,8 @@ void DifferentialDriveController_control(DifferentialDriveController* ctr){
     float tv_des=ctr->control->translational_velocity; //trans speed
     float rv_des=ctr->control->rotational_velocity;    //rotational speed
 
+    printf("velocita tras = %d\t, velocita rotazionale = %d\n", (int)tv_des,(int)rv_des);
+
     /**
      * Compute this:
      * 
@@ -34,17 +36,23 @@ void DifferentialDriveController_control(DifferentialDriveController* ctr){
      * omega_l = v/r - (d*omega) / 2*r
     */
     
-    float first_term = tv_des / ctr->params->radius_wheel;
-    float second_term_num = ctr->params->distance * rv_des;
-    float second_term_den = 2*ctr->params->radius_wheel;
-    float second_term = second_term_num / second_term_den;
+    float first_term = tv_des / ctr->params->radius_wheel;  // v / r  
+    printf("first term = %d\n", (int)first_term);
+    float second_term_num = ctr->params->distance * rv_des;  // d * omega  
+    printf("second term num = %d\n", (int)second_term_num);
+    float second_term_den = 2*ctr->params->radius_wheel;     // 2 * r = 4 
+    printf("second term den = %d\n", (int)second_term_den);
+    float second_term = second_term_num / second_term_den;   // d * omega / 2 * r  
+    printf("second term = %d\n", (int)second_term);
 
-    float total_right = first_term + second_term;
-    float total_left = first_term - second_term;
+    float total_right = first_term + second_term;  // v/r + d*omega / 2*r  2 + 25 = 27
+    float total_left = first_term - second_term;   // v/r - d*omega / 2*r  2 - 25 = -23 
     
     //Write to the single motor 
     ctr->control_right->speed=total_right;
     ctr->control_left->speed=total_left;
+
+    printf("omega right = %d\t omega left = %d\n",(int)total_right,(int)total_left);
 
     
 }

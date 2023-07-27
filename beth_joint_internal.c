@@ -21,7 +21,7 @@ void BethJoint_init(BethJoint* j, MotorControlPacket* _control,
     j->params=_params;
     j->enc_idx=_eidx;
 
-    PWM_init();
+
     digio_configurePin(j->params->pwm_pin, Output);
     digio_setPin(j->params->pwm_pin,0);
     PWM_enablePin(j->params->pwm_pin);
@@ -59,7 +59,7 @@ void BethJoint_handle(BethJoint* j){
         int16_t error = j->status->desired_speed - j->status->measured_speed;
         int16_t output = 0;
 
-        printf("Speed = %d\n", j->status->measured_speed);
+        printf("Speed to enc[%d]= %d\n", j->enc_idx,j->status->measured_speed);
 
         j->params->sum_i += j->params->ki * error * j->params->dt;
         j->params->sum_i = clamp(j->params->sum_i,j->params->max_i);

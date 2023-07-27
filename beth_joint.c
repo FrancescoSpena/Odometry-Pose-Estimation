@@ -6,10 +6,12 @@
 #include "beth_joint_internal.h"
 #include "beth_globals.h"
 #include "encoder.h"
+#include "pwm.h"
 
 
 void BethJoints_init(void){
     Encoder_init();
+    PWM_init();
     BethJoint_init(&joints[0],&motor1_control, &motor1_status, &motor1_params, 3);
     BethJoint_init(&joints[1],&motor2_control, &motor2_status, &motor2_params, 2);
     return;

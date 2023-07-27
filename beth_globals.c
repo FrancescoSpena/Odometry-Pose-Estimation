@@ -15,8 +15,8 @@ MotorControlPacket motor1_control = {
         .src_addr=0,
         .checksum=0,
     },
-    .mode=Pid,
-    .speed=160 //sotto i 150 il motore non gira
+    .mode=Direct,
+    .speed=0 
 };
 
 MotorStatusPacket motor1_status = {
@@ -68,8 +68,8 @@ MotorControlPacket motor2_control = {
         .src_addr=0,
         .checksum=0,
     },
-    .mode=Pid,
-    .speed=100
+    .mode=Direct,
+    .speed=0
 };
 
 MotorStatusPacket motor2_status = {
@@ -137,7 +137,7 @@ DifferentialDriveParamPacket drive_params = {
     },
     //change this value (in cm)
     .distance=20,
-    .radius_wheel=3
+    .radius_wheel=2
 };
 
 DifferentialDriveControlPacket drive_control = {
@@ -150,7 +150,7 @@ DifferentialDriveControlPacket drive_control = {
         .checksum=0,
     },
     .rotational_velocity=0,
-    .translational_velocity=100
+    .translational_velocity=1000
 };
 
 DifferentialDriveStatusPacket drive_status = {
