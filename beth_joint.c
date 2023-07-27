@@ -7,13 +7,12 @@
 #include "beth_globals.h"
 #include "encoder.h"
 
-BethJoint joints[NUM_JOINTS];
 
 void BethJoints_init(void){
     Encoder_init();
-    BethJoint_init(&joints[0],&motor_control, &motor_status, &motor1_params, 3);
+    BethJoint_init(&joints[0],&motor1_control, &motor1_status, &motor1_params, 3);
     //Previsto anche un secondo motore, controllare indici encoder
-    //BethJoint_init(&joints[1],&motor_control, &motor_status, &motor2_params, 2);
+    BethJoint_init(&joints[1],&motor2_control, &motor2_status, &motor2_params, 2);
     return;
 }
 

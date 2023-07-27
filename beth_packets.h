@@ -11,6 +11,9 @@
 #define ID_MOTOR_STATUS_PACKET 1
 #define ID_MOTOR_PARAMS_PACKET 2
 #define ID_SYSTEM_STATUS_PACKET 3
+#define DIFFERENTIAL_DRIVE_STATUS_PACKET 4
+#define DIFFERENTIAL_DRIVE_PARAMS_PACKET 5
+#define DIFFERENTIAL_DRIVE_CONTROL_PACKET 6
 
 typedef enum{
     Direct=0,
@@ -65,6 +68,31 @@ typedef struct{
     uint16_t tx_packets;
     uint16_t idle_cycles;
 }SystemStatusPacket;
+
+typedef struct{
+    PacketHeader h;
+    float odom_x, odom_y, odom_theta; //odometry encoder
+    float translational_velocity_measured;
+    float rotational_velocity_measured;
+    
+    float translational_velocity_desired;
+    float rotational_velocity_desired;
+    
+    uint8_t enabled;
+}DifferentialDriveStatusPacket;
+
+typedef struct{
+    PacketHeader h;
+    float radius_wheel;
+    float distance; //distance wheel
+}DifferentialDriveParamPacket;
+
+//sent from the pc to the robot
+typedef struct{
+    PacketHeader h;
+    float translational_velocity;
+    float rotational_velocity;
+}DifferentialDriveControlPacket;
 
 #pragma pack(pop)
 
