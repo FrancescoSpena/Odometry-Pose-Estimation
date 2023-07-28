@@ -150,7 +150,7 @@ DifferentialDriveControlPacket drive_control = {
         .checksum=0,
     },
     .rotational_velocity=0,
-    .translational_velocity=1000
+    .translational_velocity=100
 };
 
 DifferentialDriveStatusPacket drive_status = {
