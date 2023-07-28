@@ -8,9 +8,9 @@
 
 struct PacketHandler;
 
-typedef PacketStatus (*PacketHandlerFn)(struct PacketHandler*, uint8_t);
+typedef PacketStatus (*PacketHandlerFn)(struct PacketHandler* h, uint8_t c);
 
-typedef struct{
+typedef struct PacketHandler{
     //Operation (not yet)
     //PacketOperation packet_ops[MAX_PACKET_TYPE];
     //transmission

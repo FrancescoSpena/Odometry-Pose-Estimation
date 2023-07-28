@@ -135,7 +135,7 @@ PacketStatus _rxPayload(PacketHandler* h, uint8_t c){
 }
 
 PacketStatus _rxCs(PacketHandler* h, uint8_t c){
-    h->current_packet=(PacketHandler*)h->rx_buffer;
+    h->current_packet=(PacketHeader*)h->rx_buffer;
     uint8_t recv_cs=h->rx_checksum; //received checksum 
     recv_cs^=h->current_packet->checksum;
     h->current_packet->checksum = 0;
