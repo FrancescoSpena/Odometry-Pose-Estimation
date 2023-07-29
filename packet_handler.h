@@ -31,6 +31,8 @@ typedef struct PacketHandler{
 
 }PacketHandler;
 
+PacketHandler handler;
+
 void PacketHandler_init(PacketHandler*);
 //void PacketHandler_addOperation(PacketHandler*,PacketOperation*);
 PacketStatus PacketHandler_sendPacket(PacketHandler*, PacketHeader*);

@@ -66,7 +66,6 @@ uint8_t PacketHandler_txSize(PacketHandler* h){
 }
 
 uint8_t PacketHandler_writeByte(PacketHandler* h){
-    //lo consuma dalla testa
     if(h->tx_size == 0)
         return 0;
     uint8_t c = *(h->tx_start);
