@@ -4,6 +4,7 @@
 #include "beth_client.h"
 #include "print_packets.h"
 #include "../packet_operations.h"
+#include <pthread.h>
 
 BethClient client;
 
@@ -21,20 +22,35 @@ MotorControlPacket packet = {
         .speed=100
 };
 
-PacketOperation motor_control_op = {
-    .id=ID_MOTOR_CONTROL_PACKET,
-    .size=sizeof(packet),
-    .on_receive_fn=recvFn,
-    .args=(void*)&packet
-};
-
 PacketHandler handler;
+
+void* statusRoutine(void* client){
+    printf("status routine\n");
+    char buf[256];
+    BethClient* cli = (BethClient*)client;
+    int fd = cli->serial_fd;
+    uint8_t c;
+    PacketStatus status = UnknownType;
+    while(status != ChecksumSuccess){
+        int n = read(fd,&c,1);
+        if(n){
+            status = PacketHandler_readByte(&handler,c);
+        }
+    }
+    printf("Received:\n");
+    PacketHeader* h = handler.current_packet;
+    printPacket(h,buf);
+    printf("%s\n",buf);
+    pthread_exit(NULL);
+}
 
 int main(void){
     char buf[256];
-    BethClient_init(&client,"/dev/ttyACM0",57600);
+    BethClient_init(&client,"/dev/ttyACM0",19200);
     PacketHandler_init(&handler);
-    PacketHandler_addOperation(&handler,&motor_control_op);
+
+    pthread_t thread;
+    pthread_create(&thread,NULL,statusRoutine,&client);
 
     PacketHeader* h = &packet.h;
     

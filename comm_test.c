@@ -6,6 +6,7 @@
 #include "beth_packets.h"
 #include "packet_operations.h"
 #include <string.h>
+#include <util/delay.h>
 
 
 Uart uart;
@@ -17,10 +18,20 @@ int main(void){
     Uart_init(uart);
     PacketHandler_init(&handler);
 
+    PacketStatus status = UnknownType;
+
     while(1){
-        if(Uart_available(&uart) > 1){
-            uint8_t c = Uart_read(&uart);
-            PacketHandler_readByte(&handler,c);
+        if(Uart_available(&uart) >= 1){
+            while(status != ChecksumSuccess){
+                uint8_t c = Uart_read(&uart);
+                status = PacketHandler_readByte(&handler,c);
+                if(status != Success) break;
+            }
+            while(handler.rx_buffer){
+                Uart_write(&uart,handler.rx_buffer);
+                //increment buffer (?) no idea 
+            }
         }
-    }
+    } 
+    return 0;
 }
