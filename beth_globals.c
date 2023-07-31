@@ -8,7 +8,7 @@
 MotorControlPacket motor1_control = {
     //header
     {
-        .id=ID_MOTOR1_CONTROL_PACKET,
+        .id=ID_MOTOR_CONTROL_PACKET,
         .size=sizeof(motor1_control),
         .seq=0,
         .dest_addr=0,
@@ -22,7 +22,7 @@ MotorControlPacket motor1_control = {
 MotorStatusPacket motor1_status = {
     //header
     {
-        .id=ID_MOTOR1_STATUS_PACKET,
+        .id=ID_MOTOR_STATUS_PACKET,
         .size=sizeof(motor1_status),
         .seq=0,
         .dest_addr=0,
@@ -37,7 +37,7 @@ MotorStatusPacket motor1_status = {
 MotorParamsPacket motor1_params = {
     //header
     {
-        .id=ID_MOTOR1_PARAMS_PACKET,
+        .id=ID_MOTOR_PARAMS_PACKET,
         .size=sizeof(motor1_params),
         .seq=0,
         .dest_addr=0,
@@ -61,7 +61,7 @@ MotorParamsPacket motor1_params = {
 MotorControlPacket motor2_control = {
     //header
     {
-        .id=ID_MOTOR2_CONTROL_PACKET,
+        .id=ID_MOTOR_CONTROL_PACKET,
         .size=sizeof(motor2_control),
         .seq=0,
         .dest_addr=0,
@@ -75,7 +75,7 @@ MotorControlPacket motor2_control = {
 MotorStatusPacket motor2_status = {
     //header
     {
-        .id=ID_MOTOR2_STATUS_PACKET,
+        .id=ID_MOTOR_STATUS_PACKET,
         .size=sizeof(motor2_status),
         .seq=0,
         .dest_addr=0,
@@ -90,7 +90,7 @@ MotorStatusPacket motor2_status = {
 MotorParamsPacket motor2_params = {
     //header
     {
-        .id=ID_MOTOR2_PARAMS_PACKET,
+        .id=ID_MOTOR_PARAMS_PACKET,
         .size=sizeof(motor2_params),
         .seq=0,
         .dest_addr=0,

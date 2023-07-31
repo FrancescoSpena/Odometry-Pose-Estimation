@@ -5,7 +5,7 @@
 #pragma once 
 #include <stdint.h>
 
-#define MAX_PACKET_TYPE 16 
+#define MAX_PACKET_TYPE 4 
 #define PACKET_SIZE_MAX 256 
 #define ID_MOTOR_CONTROL_PACKET 0 
 #define ID_MOTOR_STATUS_PACKET 1
