@@ -21,6 +21,10 @@ void PacketHandler_init(PacketHandler* h){
     return;
 }
 
+void PacketHandler_addOperation(PacketHandler* h,PacketOperation* o){
+    h->packet_ops[o->id]=*o;
+}
+
 //compute checksum
 uint8_t computeCS(PacketHeader* _p){
     uint8_t checksum = 0; 
@@ -96,21 +100,21 @@ PacketStatus _rxId(PacketHandler* h, uint8_t c){
         h->receive_fn=_rxAA;
         return UnknownType;
     }
-    //h->current_op = &h->packet_ops[c];
+    h->current_op = &h->packet_ops[c];
     h->receive_fn=_rxSize;
     return Success;
 }
 
 PacketStatus _rxSize(PacketHandler* h, uint8_t c){
-    /*if(h->current_op->size!=c) {
+    if(h->current_op->size!=c) {
         h->receive_fn=_rxAA;
         h->current_op=0;
         return WrongSize;
-    }*/
+    }
     //inserting id and size 
     h->rx_end = h->rx_buffer+c;
     h->rx_start = h->rx_buffer;
-    //h->rx_buffer[0]=h->current_op->id;
+    h->rx_buffer[0]=h->current_op->id;
     h->rx_buffer[1] = c;
     h->rx_start += 2; 
     //computing checksum 
@@ -145,8 +149,8 @@ PacketStatus _rxCs(PacketHandler* h, uint8_t c){
         h->receive_fn=_rxAA;
         return ChecksumError;
     }
-    //receiveFn_t recvFn=h->current_op->on_receive_fn;
-    //(*recvFn)(h->current_packet, h->current_op->args);
+    receiveFn_t recvFn=h->current_op->on_receive_fn;
+    (*recvFn)(h->current_packet, h->current_op->args);
     h->receive_fn=_rxAA;
     return ChecksumSuccess;
 }
