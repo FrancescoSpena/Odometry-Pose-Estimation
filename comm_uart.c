@@ -17,8 +17,10 @@ void setBaud57600(void){
 }
 
 
-void Uart_init(Uart uart){
+struct Uart* Uart_init(){
     cli();
+
+    setBaud57600();
 
     uart.rx_start=0;
     uart.rx_end=0;
@@ -31,8 +33,12 @@ void Uart_init(Uart uart){
         uart.tx_buffer[i]=0xCE;
     }
 
+    UCSR0A=0x00;
+    UCSR0C=(1<<UCSZ01) | (1<<UCSZ00); // 8 bit data
+    UCSR0B=(1<<RXEN0) | (1<<TXEN0) | (1<<RXCIE0);//enable rx and tx functions
+
     sei();
-    return;
+    return &uart;
 }
 
 /**

@@ -9,6 +9,7 @@
 
 char buf[256];
 
+//Inizialize the packet handler
 void BethClient_init(BethClient* c, char* dev, int speed){
     c->serial_fd=setupSerial(dev,speed);
     if(c->serial_fd < 0){

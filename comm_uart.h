@@ -20,7 +20,7 @@ Uart uart;
 /**
  * Initialize the Uart module
  **/
-void Uart_init(Uart uart);
+struct Uart* Uart_init();
 
 /**
  * Insert c in the uart buffer, ready to be sent
