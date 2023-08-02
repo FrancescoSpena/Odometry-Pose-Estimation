@@ -10,10 +10,11 @@
 
 int main(void){
     struct Uart* uart = Uart_init();
-
     while(1){
-        if(Uart_available(uart) > 1){
-            Uart_write(uart,Uart_read(uart));
-        }
+        uint8_t ava = Uart_available(uart);
+        if(ava != 0){
+            Uart_write(uart,ava);
+        }else Uart_write(uart,'0');
+        _delay_ms(1000);
     }
 }

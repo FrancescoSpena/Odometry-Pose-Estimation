@@ -40,7 +40,7 @@ int setupTermios(int fd, int speed, int parity){
 }
 
 int setupSerial(char* device, int speed){
-    int fd = open(device, O_RDWR | O_NOCTTY);
+    int fd = open(device, O_RDWR | O_NOCTTY | O_SYNC);
 
     if(fd < 0){
         printf("Error %d opening %d\n",errno,fd);

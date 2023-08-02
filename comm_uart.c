@@ -16,11 +16,35 @@ void setBaud57600(void){
     #undef BAUD
 }
 
+void setBaud115200(void) {
+  #define BAUD 115200
+  #include <util/setbaud.h>
+  UBRR0H = UBRRH_VALUE;
+  UBRR0L = UBRRL_VALUE;
+
+  #ifdef USE_2X
+  UCSR0A |= (1<<U2X0);
+  #endif
+  #undef BAUD
+}
+
+void setBaud19200(void){
+  #define BAUD 19200
+  #include <util/setbaud.h>
+  UBRR0H = UBRRH_VALUE;
+  UBRR0L = UBRRL_VALUE;
+
+  #ifdef USE_2X
+  UCSR0A |= (1<<U2X0);
+  #endif
+  #undef BAUD
+}
+
 
 struct Uart* Uart_init(){
     cli();
 
-    setBaud57600();
+    setBaud19200();
 
     uart.rx_start=0;
     uart.rx_end=0;
