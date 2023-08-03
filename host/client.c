@@ -83,7 +83,7 @@ int main(void){
     }
 
     pthread_t thread;
-    pthread_create(&thread,NULL,statusRoutine,&client);
+    pthread_create(&thread,NULL,echoRoutine,&client);
 
     char buf[256];
 
