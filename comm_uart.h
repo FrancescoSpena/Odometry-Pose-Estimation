@@ -1,26 +1,20 @@
-#pragma once 
+/**
+ * uart.h
+ *
+ * This section handle the low level mechanics of the UART module.
+ * Different functions have to be made, in order to send and receive
+ * bytes.
+ **/
+
+#pragma once
 #include <stdint.h>
 
-#define BUF_SIZE 256 
-
-typedef struct Uart{
-    uint8_t rx_buffer[BUF_SIZE];
-    uint8_t rx_start;
-    uint8_t rx_end; 
-    uint8_t rx_size;
-
-    uint8_t tx_buffer[BUF_SIZE];
-    uint8_t tx_start;
-    uint8_t tx_end;
-    uint8_t tx_size;
-}Uart;
-
-Uart uart;
+struct Uart;
 
 /**
  * Initialize the Uart module
  **/
-struct Uart* Uart_init();
+struct Uart* Uart_init(uint32_t);
 
 /**
  * Insert c in the uart buffer, ready to be sent

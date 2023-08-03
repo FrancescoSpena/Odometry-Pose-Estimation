@@ -1,23 +1,35 @@
-#include "comm_uart.h"
+/**
+ * uart.h
+ *
+ * This section handle the low level mechanics of the UART module.
+ * Different functions have to be made, in order to send and receive
+ * bytes.
+ **/
+#include "uart.h"
 #include <avr/io.h>
 #include <avr/interrupt.h>
 
 #include "digio.h"
 
-void setBaud57600(void){
-    #define BAUD 57600
-    #include <util/setbaud.h>
-    UBRR0H = UBRRH_VALUE;
-    UBRR0L = UBRRL_VALUE;
+#define BUF_SIZE 256
 
-    #ifdef USE_2X
-    UCSR0A |= (1<<U2X0);
-    #endif
-    #undef BAUD
-}
 
-void setBaud115200(void) {
-  #define BAUD 115200
+typedef struct Uart{
+  uint8_t rx_buffer[BUF_SIZE];
+  uint8_t rx_start;
+  uint8_t rx_end;
+  uint8_t rx_size;
+
+  uint8_t tx_buffer[BUF_SIZE];
+  uint8_t tx_start;
+  uint8_t tx_end;
+  uint8_t tx_size;
+}Uart;
+
+static Uart uart;
+
+void setBaud57600(void) {
+  #define BAUD 57600
   #include <util/setbaud.h>
   UBRR0H = UBRRH_VALUE;
   UBRR0L = UBRRL_VALUE;
@@ -41,28 +53,38 @@ void setBaud19200(void){
 }
 
 
-struct Uart* Uart_init(){
-    cli();
-
+/**
+ * Initialize the Uart module
+ **/
+struct Uart* Uart_init(uint32_t baud) {
+  cli();
+  switch(baud) {
+  case 57600:{
+    setBaud57600();
+    break;
+  }
+  case 19200:{
     setBaud19200();
+    break;
+  }
+  default:
+    return 0;
+  }
+  
+  uart.rx_start=0;
+  uart.rx_end=0;
+  uart.rx_size=0;
+  uart.tx_start=0;
+  uart.tx_end=0;
+  uart.tx_size=0;
+  for(int i=0;i<BUF_SIZE;++i)
+    uart.tx_buffer[i]=0xCE;
 
-    uart.rx_start=0;
-    uart.rx_end=0;
-    uart.rx_size=0;
-    uart.tx_start=0;
-    uart.tx_end=0;
-    uart.tx_size=0;
-
-    for(int i=0; i < BUF_SIZE; i++){
-        uart.tx_buffer[i]=0xCE;
-    }
-
-    UCSR0A=0x00;
-    UCSR0C=(1<<UCSZ01) | (1<<UCSZ00); // 8 bit data
-    UCSR0B=(1<<RXEN0) | (1<<TXEN0) | (1<<RXCIE0);//enable rx and tx functions
-
-    sei();
-    return &uart;
+  UCSR0A=0x00;
+  UCSR0C=(1<<UCSZ01) | (1<<UCSZ00); // 8 bit data
+  UCSR0B=(1<<RXEN0) | (1<<TXEN0) | (1<<RXCIE0);//enable rx and tx functions
+  sei();
+  return &uart;
 }
 
 /**
@@ -94,7 +116,6 @@ uint8_t Uart_read(struct Uart* u) {
   u->rx_size--;
   return c;
 }
-
 
 /**
  * Returns the number of free cells inside the tx buffer

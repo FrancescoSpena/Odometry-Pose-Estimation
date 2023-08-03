@@ -26,7 +26,7 @@ PacketStatus BethClient_sendPacket(BethClient* c, PacketHeader* h){
     uint8_t bytes = PacketHandler_txSize(&handler);
     for(int i=0; i < bytes; i++){
         uint8_t c = PacketHandler_popByte(&handler);
-        size = write(fd,&c,i);
+        size = write(fd,&c,1);
         if(size == -1){
             return UnknownType;
         }

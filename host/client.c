@@ -36,26 +36,19 @@ void* statusRoutine(void* client){
     uint8_t c;
     PacketStatus status = Success;
     int n;
-    int i = 0;
-    while(status != ChecksumSuccess){
-        n = read(fd,&c,1);
-        if(n){
-            status = PacketHandler_readByte(&handler,c);
-            i++;
-            printf("c:%c\n",c);
+    while(1){
+        while(status != ChecksumSuccess){
+            n = read(fd,&c,1);
+            if(n){
+                status = PacketHandler_readByte(&handler,c);
+            }
         }
-        //if(status != Success || status != ChecksumSuccess) break;
+        sleep(1);
+        printf("Received:\n");
+        PacketHeader* recv = handler.current_packet;
+        printPacket(recv,buf);
+        printf("%s\n",buf);
     }
-    if(status != Success){
-        printf("Parsing error --> status:%d\n",status);
-        pthread_exit(NULL);
-    }
-    printf("Received:\n");
-    PacketHeader* h = handler.current_packet;
-    printPacket(h,buf);
-    printf("%s\n",buf);
-    flag_read=0;
-    pthread_exit(NULL);
 }
 
 void* echoRoutine(void* client){
@@ -65,7 +58,7 @@ void* echoRoutine(void* client){
     while(1){
         int n = read(fd,&c,1);
         if(n){
-            printf("ricevuto:\n");
+            printf("ricevuto:");
             /*for(int i=0; i < 8; i++){
                 printf("%d", !!((c << i) & 0x80));
             }*/
@@ -93,10 +86,14 @@ int main(void){
     pthread_t thread;
     pthread_create(&thread,NULL,statusRoutine,&client);
 
-    char c;
+    char buf[256];
+
     while(1){
-        scanf("%c",&c);
-        write(client.serial_fd,&c,1);
+        BethClient_sendPacket(&client,&packet.h);
+        printPacket(&packet.h,buf);
+        printf("Sent:\n");
+        printf("%s\n",buf);
+        sleep(1);
     }
     
 

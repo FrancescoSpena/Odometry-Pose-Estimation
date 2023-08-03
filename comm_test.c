@@ -7,14 +7,15 @@
 #include <string.h>
 #include <util/delay.h>
 
+/*Digitare Enter viene letto come un carattere*/
 
 int main(void){
-    struct Uart* uart = Uart_init();
+    struct Uart* uart = Uart_init(19200);
+
     while(1){
-        uint8_t ava = Uart_available(uart);
-        if(ava != 0){
-            Uart_write(uart,ava);
-        }else Uart_write(uart,'0');
-        _delay_ms(1000);
+        if(Uart_available(uart) >= 1){
+            uint8_t c = Uart_read(uart);
+            Uart_write(uart,c);
+        }
     }
 }
