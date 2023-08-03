@@ -23,15 +23,16 @@ typedef enum{
 
 #pragma pack(push,1)
 
+//Header
 typedef struct{
     uint8_t id;
     uint8_t size;
     uint16_t seq;
     uint8_t dest_addr;
-    uint8_t src_addr;
     uint8_t checksum;
 }PacketHeader;
 
+//Single motor 
 typedef struct{
     PacketHeader h;
     uint8_t mode;
@@ -61,6 +62,7 @@ typedef struct{
     double dt, idt;
 }MotorParamsPacket;
 
+//System
 typedef struct{
     PacketHeader h;
     uint16_t rx_packets;
@@ -69,6 +71,7 @@ typedef struct{
     uint16_t idle_cycles;
 }SystemStatusPacket;
 
+//Robot
 typedef struct{
     PacketHeader h;
     float odom_x, odom_y, odom_theta; //odometry encoder

@@ -37,13 +37,10 @@ void DifferentialDriveController_control(DifferentialDriveController* ctr){
     */
     
     float first_term = tv_des / ctr->params->radius_wheel;  // v / r  
-    printf("first term = %d\n", (int)first_term);
     float second_term_num = ctr->params->distance * rv_des;  // d * omega  
-    printf("second term num = %d\n", (int)second_term_num);
     float second_term_den = 2*ctr->params->radius_wheel;     // 2 * r = 4 
-    printf("second term den = %d\n", (int)second_term_den);
     float second_term = second_term_num / second_term_den;   // d * omega / 2 * r  
-    printf("second term = %d\n", (int)second_term);
+
 
     float total_right = first_term + second_term;  // v/r + d*omega / 2*r  2 + 25 = 27
     float total_left = first_term - second_term;   // v/r - d*omega / 2*r  2 - 25 = -23 
@@ -51,10 +48,7 @@ void DifferentialDriveController_control(DifferentialDriveController* ctr){
     //Write to the single motor 
     ctr->control_right->speed=total_right;
     ctr->control_left->speed=total_left;
-
-    printf("omega right = %d\t omega left = %d\n",(int)total_right,(int)total_left);
-
-    
+    return;
 }
 
 void DifferentialDriveController_reset(DifferentialDriveController* ctr,

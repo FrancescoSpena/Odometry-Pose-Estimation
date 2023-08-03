@@ -12,7 +12,6 @@ MotorControlPacket motor1_control = {
         .size=sizeof(motor1_control),
         .seq=0,
         .dest_addr=0,
-        .src_addr=0,
         .checksum=0,
     },
     .mode=Direct,
@@ -26,7 +25,6 @@ MotorStatusPacket motor1_status = {
         .size=sizeof(motor1_status),
         .seq=0,
         .dest_addr=0,
-        .src_addr=0,
         .checksum=0,
     },
     .encoder_ticks=0,
@@ -41,7 +39,6 @@ MotorParamsPacket motor1_params = {
         .size=sizeof(motor1_params),
         .seq=0,
         .dest_addr=0,
-        .src_addr=0,
         .checksum=0,
     },
     .dir_a_pin=5, 
@@ -65,7 +62,6 @@ MotorControlPacket motor2_control = {
         .size=sizeof(motor2_control),
         .seq=0,
         .dest_addr=0,
-        .src_addr=0,
         .checksum=0,
     },
     .mode=Direct,
@@ -79,7 +75,6 @@ MotorStatusPacket motor2_status = {
         .size=sizeof(motor2_status),
         .seq=0,
         .dest_addr=0,
-        .src_addr=0,
         .checksum=0,
     },
     .encoder_ticks=0,
@@ -94,7 +89,6 @@ MotorParamsPacket motor2_params = {
         .size=sizeof(motor2_params),
         .seq=0,
         .dest_addr=0,
-        .src_addr=0,
         .checksum=0,
     },
     .dir_a_pin=7, 
@@ -117,7 +111,6 @@ SystemStatusPacket system_status = {
         .size=sizeof(system_status),
         .seq=0,
         .dest_addr=0,
-        .src_addr=0,
         .checksum=0,
     },
     .rx_packets=0,
@@ -132,7 +125,6 @@ DifferentialDriveParamPacket drive_params = {
         .size=sizeof(drive_params),
         .seq=0,
         .dest_addr=0,
-        .src_addr=0,
         .checksum=0,
     },
     //change this value (in cm)
@@ -140,17 +132,18 @@ DifferentialDriveParamPacket drive_params = {
     .radius_wheel=2
 };
 
+//dest_addr = 0 --> motor 1 
+//dest_addr = 1 --> motor 2 
 DifferentialDriveControlPacket drive_control = {
     {
         .id=DIFFERENTIAL_DRIVE_CONTROL_PACKET,
         .size=sizeof(drive_control),
         .seq=0,
         .dest_addr=0,
-        .src_addr=0,
         .checksum=0,
     },
     .rotational_velocity=0,
-    .translational_velocity=100
+    .translational_velocity=0
 };
 
 DifferentialDriveStatusPacket drive_status = {
@@ -159,7 +152,6 @@ DifferentialDriveStatusPacket drive_status = {
         .size=sizeof(drive_status),
         .seq=0,
         .dest_addr=0,
-        .src_addr=0,
         .checksum=0,
     },
     .odom_x=0,
