@@ -46,6 +46,33 @@ uint16_t SystemStatusPacket_print(PacketHeader* h, char* buf){
                 p->idle_cycles);
 }
 
+uint16_t DifferentialDriveStatusPacket_print(PacketHeader* h, char* buf){
+    DifferentialDriveStatusPacket* p = (DifferentialDriveStatusPacket*)h;
+    uint16_t h_chars = printHeader(h,buf);
+    return sprintf(buf+h_chars,"[odom_x:%f odom_y:%f odom_theta:%f tran_measured_vel:%f rotat_measured_vel:%f tran_desidered_vel:%f rotat_measured_vel:%f enabled:%d]",
+                p->odom_x,
+                p->odom_y,
+                p->odom_theta,
+                p->translational_velocity_measured,
+                p->rotational_velocity_measured,
+                p->rotational_velocity_desired,
+                p->rotational_velocity_desired,
+                p->enabled);
+}
+
+uint16_t DifferentialDriveParamPacket_print(PacketHeader* h, char* buf){
+    DifferentialDriveParamPacket* p = (DifferentialDriveParamPacket*)h;
+    uint16_t h_chars = printHeader(h,buf);
+    return sprintf(buf+h_chars,"[radius:%f distance:%f]",p->radius_wheel,p->distance);
+}
+
+uint16_t DifferentialDriveControlPacket_print(PacketHeader* h, char* buf){
+    DifferentialDriveControlPacket* p = (DifferentialDriveControlPacket*)h;
+    uint16_t h_chars = printHeader(h,buf);
+    return sprintf(buf+h_chars,"tran_velocity:%f rotat_velocity:%f",
+                p->translational_velocity,p->rotational_velocity);
+}
+
 typedef uint16_t (*PrintPacketFn)(PacketHeader* h, char*);
 
 typedef struct{
@@ -65,6 +92,15 @@ static PrintPacketOps print_packet_ops[MAX_PACKET_TYPE] = {
     { // 3 
         .print_fn = SystemStatusPacket_print,
     },
+    { //4 differential status 
+        .print_fn = DifferentialDriveStatusPacket_print,
+    },
+    { //5 differential params
+        .print_fn = DifferentialDriveParamPacket_print,
+    },
+    { //6 differential control
+        .print_fn = DifferentialDriveControlPacket_print,
+    }
 };
 
 uint16_t printPacket(PacketHeader* h, char* buf){
