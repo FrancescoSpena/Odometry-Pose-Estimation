@@ -18,7 +18,6 @@ MotorControlPacket packet = {
             .size=sizeof(packet),
             .seq=0,
             .dest_addr=0,
-            .src_addr=0,
             .checksum=0,
         },
         .mode=Pid,
