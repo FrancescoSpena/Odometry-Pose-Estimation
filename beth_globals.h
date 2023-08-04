@@ -4,6 +4,7 @@
 
 #pragma once 
 #include "beth_packets.h"
+#include "packet_operations.h"
 
 extern MotorControlPacket motor1_control;
 extern MotorStatusPacket motor1_status;
@@ -16,3 +17,12 @@ extern SystemStatusPacket system_status;
 extern DifferentialDriveParamPacket drive_params;
 extern DifferentialDriveControlPacket drive_control;
 extern DifferentialDriveStatusPacket drive_status;
+
+//Operations
+extern PacketOperation motor_control_op;
+extern PacketOperation motor_status_op;
+extern PacketOperation motor_params_op;
+extern PacketOperation system_status_op;
+extern PacketOperation diff_drive_params_op;
+extern PacketOperation diff_drive_control_op;
+extern PacketOperation diff_drive_status_op;

@@ -3,8 +3,10 @@
 */
 
 #include "beth_globals.h"
+#include "packet_operations.h"
+#include "beth_comm.h"
 
-
+PacketHeader* header;
 MotorControlPacket motor1_control = {
     //header
     {
@@ -161,4 +163,59 @@ DifferentialDriveStatusPacket drive_status = {
     .translational_velocity_desired=0,
     .rotational_velocity_measured=0,
     .translational_velocity_measured=0
+};
+
+//Operations
+
+//Motor control packet
+PacketOperation motor_control_op = {
+    .id=ID_MOTOR_CONTROL_PACKET,
+    .size=sizeof(MotorControlPacket),
+    .on_receive_fn=BethComm_receiveFn,
+    .args=&header,
+};
+
+//Motor status packet
+PacketOperation motor_status_op = {
+    .id=ID_MOTOR_STATUS_PACKET,
+    .size=sizeof(MotorStatusPacket),
+    .on_receive_fn=BethComm_receiveFn,
+    .args=&header,
+};
+
+//Motor params packet
+PacketOperation motor_params_op = {
+    .id=ID_MOTOR_PARAMS_PACKET,
+    .size=sizeof(MotorParamsPacket),
+    .on_receive_fn=BethComm_receiveFn,
+    .args=&header,
+};
+
+//System status packet
+PacketOperation system_status_op = {
+    .id=ID_SYSTEM_STATUS_PACKET,
+    .size=sizeof(SystemStatusPacket),
+    .on_receive_fn=BethComm_receiveFn,
+    .args=&header,
+};
+//Differential Drive Param Packet
+PacketOperation diff_drive_params_op = {
+    .id=DIFFERENTIAL_DRIVE_PARAMS_PACKET,
+    .size=sizeof(DifferentialDriveParamPacket),
+    .on_receive_fn=BethComm_receiveFn,
+    .args=&header,
+};
+//Differential Drive Control Packet
+PacketOperation diff_drive_control_op = {
+    .id=DIFFERENTIAL_DRIVE_CONTROL_PACKET,
+    .size=sizeof(DifferentialDriveControlPacket),
+    .on_receive_fn=BethComm_receiveFn,
+    .args=&header,
+};
+//Differential Drive Status Packet
+PacketOperation diff_drive_status_op = {
+    .id=DIFFERENTIAL_DRIVE_STATUS_PACKET,
+    .size=sizeof(DifferentialDriveStatusPacket),
+    .on_receive_fn=BethComm_receiveFn,
+    .args=&header,
 };

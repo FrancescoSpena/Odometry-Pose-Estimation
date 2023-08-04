@@ -10,18 +10,10 @@
 #include "beth_comm.h"
 #include <stdlib.h>
 #include "print_packets.h"
+#include "beth_globals.h"
 
 
 PacketHandler handler;
-PacketHeader* header;
-
-PacketOperation motor_status_op = {
-    .id=ID_MOTOR_STATUS_PACKET,
-    .size=sizeof(MotorStatusPacket),
-    .on_receive_fn=BethComm_receiveFn,
-    .args=&header,
-};
-
 
 void echoRoutine(struct Uart* uart){
     uint8_t c;
@@ -43,6 +35,7 @@ void statusRoutine(struct Uart* uart){
                 status = PacketHandler_readByte(&handler,c);
                 //Uart_write(uart,c);
             }
+            _delay_ms(500);
             status = UnknownType;
             printf("ds:%d\t ms:%d\n",
                     motor1_status.desired_speed,motor1_status.measured_speed);
@@ -56,6 +49,7 @@ int main(void){
     struct Uart* uart = Uart_init(19200);
     PacketHandler_init(&handler);
     PacketHandler_addOperation(&handler,&motor_status_op);
+
 
     statusRoutine(uart);
 }
