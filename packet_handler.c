@@ -101,13 +101,14 @@ PacketStatus _rxId(PacketHandler* h, uint8_t c){
         h->receive_fn=_rxAA;
         return UnknownType;
     }
-    if(h->size_op != 0) h->current_op = &h->packet_ops[c];
+    if(h->size_op != 0)h->current_op = &h->packet_ops[c];
+    h->id_packet=c;
     h->receive_fn=_rxSize;
     return Success;
 }
 
 PacketStatus _rxSize(PacketHandler* h, uint8_t c){
-    if(h->current_op != 0 && h->current_op->size!=c) {
+    if(h->size_op != 0 && h->current_op->size!=c) {
         h->receive_fn=_rxAA;
         h->current_op=0;
         return WrongSize;
@@ -115,7 +116,7 @@ PacketStatus _rxSize(PacketHandler* h, uint8_t c){
     //inserting id and size 
     h->rx_end = h->rx_buffer+c;
     h->rx_start = h->rx_buffer;
-    if(h->size_op != 0) h->rx_buffer[0]=h->current_op->id;
+    h->rx_buffer[0]=h->id_packet;
     h->rx_buffer[1] = c;
     h->rx_start += 2; 
     //computing checksum 

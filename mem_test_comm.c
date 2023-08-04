@@ -10,24 +10,18 @@
 PacketHandler handler;
 PacketHeader* header;
 
-PacketOperation motor_contro_op = {
+PacketOperation motor_control_op = {
         .id=ID_MOTOR_CONTROL_PACKET,
         .size=sizeof(MotorControlPacket),
         .on_receive_fn=BethComm_receiveFn,
         .args=&header,
 };
 
-MotorControlPacket packet = {
-        //header
-        {
-            .id=ID_MOTOR_CONTROL_PACKET,
-            .size=sizeof(packet),
-            .seq=0,
-            .dest_addr=0,
-            .checksum=0,
-        },
-        .mode=Pid,
-        .speed=1
+PacketOperation motor_status_op = {
+    .id=ID_MOTOR_STATUS_PACKET,
+    .size=sizeof(MotorStatusPacket),
+    .on_receive_fn=BethComm_receiveFn,
+    .args=&header,
 };
 
 void parsingPacket(struct Uart* uart){
@@ -40,41 +34,22 @@ void parsingPacket(struct Uart* uart){
                 status = PacketHandler_readByte(&handler,c);
                 Uart_write(uart,c);
             }
-            status = UnknownType;  
+            status = UnknownType;
+            //BethComm_receiveFn(handler.current_packet,0);
+            //printf("des speed:%d\t measured speed:%d\n",motor1_status.desired_speed,motor1_status.measured_speed);
         }
+        _delay_ms(500);
     }
 }
 
 int main(void){
-    //printf_init();
-    PacketHandler_init(&handler);
+    printf_init();
     struct Uart* uart = Uart_init(19200);
-
-    PacketStatus status = UnknownType;
-    uint8_t c;
+    PacketHandler_init(&handler);
+    //PacketHandler_addOperation(&handler,&motor_status_op);
     while(1){
-        if(Uart_available(uart)){
-            while(status != ChecksumSuccess){
-                c = Uart_read(uart);
-                status = PacketHandler_readByte(&handler,c);
-                //Uart_write(uart,c);
-            }
-            status = UnknownType;
-            BethComm_receiveFn(handler.current_packet,0);
-            uint8_t mode = motor1_control.mode;
-            uint8_t speed = motor1_control.speed;
-            char str_mode;
-            char str_speed;
-            Uart_write(uart,'m');
-            itoa(mode,&str_mode,10);
-            itoa(speed,&str_speed,10);
-            Uart_write(uart,str_mode);
-            Uart_write(uart,'s');
-            Uart_write(uart,str_speed);  
-        }
-
+        parsingPacket(uart);
     }
-
 
     return 0; 
 }

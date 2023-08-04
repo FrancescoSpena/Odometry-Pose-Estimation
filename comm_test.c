@@ -9,24 +9,31 @@
 #include "uart.h"
 #include "beth_comm.h"
 #include <stdlib.h>
+#include "print_packets.h"
 
-/*Digitare Enter viene letto come un carattere*/
 
 PacketHandler handler;
-
 PacketHeader* header;
 
-PacketOperation motor_contro_op = {
-        .id=ID_MOTOR_CONTROL_PACKET,
-        .size=sizeof(MotorControlPacket),
-        .on_receive_fn=BethComm_receiveFn,
-        .args=&header,
+PacketOperation motor_status_op = {
+    .id=ID_MOTOR_STATUS_PACKET,
+    .size=sizeof(MotorStatusPacket),
+    .on_receive_fn=BethComm_receiveFn,
+    .args=&header,
 };
 
-int main(void){
-    struct Uart* uart = Uart_init(19200);
-    PacketHandler_init(&handler);
-    //PacketHandler_addOperation(&handler,&motor_contro_op);
+
+void echoRoutine(struct Uart* uart){
+    uint8_t c;
+    while(1){
+        if(Uart_available(uart)){
+            c = Uart_read(uart);
+            Uart_write(uart,c);
+        }
+    } 
+}
+
+void statusRoutine(struct Uart* uart){
     PacketStatus status = UnknownType;
     uint8_t c;
     while(1){
@@ -37,18 +44,18 @@ int main(void){
                 //Uart_write(uart,c);
             }
             status = UnknownType;
-            BethComm_receiveFn(handler.current_packet,0);
-            uint8_t mode = motor1_control.mode;
-            uint8_t speed = motor1_control.speed;
-            char str_mode;
-            char str_speed;
-            Uart_write(uart,'m');
-            itoa(mode,&str_mode,10);
-            itoa(speed,&str_speed,10);
-            Uart_write(uart,str_mode);
-            Uart_write(uart,'s');
-            Uart_write(uart,str_speed);  
+            printf("ds:%d\t ms:%d\n",
+                    motor1_status.desired_speed,motor1_status.measured_speed);
         }
         _delay_ms(500);
     }
+}
+
+int main(void){
+    printf_init();
+    struct Uart* uart = Uart_init(19200);
+    PacketHandler_init(&handler);
+    PacketHandler_addOperation(&handler,&motor_status_op);
+
+    statusRoutine(uart);
 }

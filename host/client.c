@@ -9,31 +9,31 @@
 #define NUM_THREAD 2
 int flag_read;
 
+
 BethClient client;
 
-MotorControlPacket packet = {
-        //header
-        {
-            .id=ID_MOTOR_CONTROL_PACKET,
-            .size=sizeof(packet),
-            .seq=0,
-            .dest_addr=0,
-            .checksum=0,
-        },
-        .mode=Pid,
-        .speed=100
+MotorStatusPacket packet = {
+    {
+        .id=ID_MOTOR_STATUS_PACKET,
+        .size=sizeof(MotorStatusPacket),
+        .seq=0,
+        .dest_addr=0,
+        .checksum=0,
+    },
+    .desired_speed=100,
+    .encoder_ticks=0,
+    .measured_speed=50,
 };
 
 PacketHandler handler;
 
 void* statusRoutine(void* client){
-    sleep(1);
     //printf("In status routine\n");
     char buf[256];
     BethClient* cli = (BethClient*)client;
     int fd = cli->serial_fd;
     uint8_t c;
-    PacketStatus status = Success;
+    PacketStatus status = UnknownType;
     int n;
     while(1){
         while(status != ChecksumSuccess){
@@ -42,7 +42,7 @@ void* statusRoutine(void* client){
                 status = PacketHandler_readByte(&handler,c);
             }
         }
-        sleep(1);
+        status=UnknownType;
         printf("Received:\n");
         PacketHeader* recv = handler.current_packet;
         printPacket(recv,buf);
@@ -76,24 +76,24 @@ sempre fare attenzione con la write
 int main(void){
     BethClient_init(&client,"/dev/ttyACM0",19200);
     PacketHandler_init(&handler);
+    //PacketHandler_addOperation(&handler,&motor_status_op);
 
-    if(client.serial_fd < 0){
-        printf("Error opening\n");
-        return 0;
-    }
 
-    pthread_t thread;
-    pthread_create(&thread,NULL,echoRoutine,&client);
+    //pthread_t thread;
+    //pthread_create(&thread,NULL,statusRoutine,&client);
 
-    char buf[256];
+    //char buf[256];
 
     while(1){
         BethClient_sendPacket(&client,&packet.h);
-        printPacket(&packet.h,buf);
-        printf("Sent:\n");
-        printf("%s\n",buf);
+        //printPacket(&packet.h,buf);
+        //printf("Sent:\n");
+        //printf("%s\n",buf);
         sleep(1);
     }
+
+
+
     
 
     return 0;

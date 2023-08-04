@@ -123,10 +123,10 @@ void DifferentialDriveControlPacket_receiveFn(PacketHeader* h){
 
 
 static BethComm received_packet_ops[MAX_PACKET_TYPE] = {
-    {    //0
+    {   //0 motor_control
         .receive_fn=MotorControlPacket_receiveFn,
     },
-    {   // 1
+    {  //1 motor_status
         .receive_fn=MotorStatusPacket_receiveFn,
     },
     {  //2 motor_params

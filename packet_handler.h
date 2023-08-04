@@ -24,6 +24,7 @@ typedef struct PacketHandler{
     PacketOperation* current_op;
     uint8_t size_op;
     PacketHeader* current_packet;
+    uint8_t id_packet;
     uint8_t rx_buffer[PACKET_SIZE_MAX];
     uint8_t* rx_start;
     uint8_t* rx_end;
