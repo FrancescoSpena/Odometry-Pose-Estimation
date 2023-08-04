@@ -3,8 +3,8 @@
 */
 
 #pragma once 
-#include "beth_packets.h"
-#include "packet_operations.h"
+#include "../common/beth_packets.h"
+#include "../common/packet_operations.h"
 
 extern MotorControlPacket motor1_control;
 extern MotorStatusPacket motor1_status;

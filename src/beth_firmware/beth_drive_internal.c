@@ -3,8 +3,8 @@
 */
 
 #include "beth_drive_internal.h"
-#include "uart.h"
-#include "stdio.h"
+#include "../arch/include/uart.h"
+#include <stdio.h>
 
 void DifferentialDriveController_init(DifferentialDriveController* ctr,
                                       DifferentialDriveParamPacket* params,

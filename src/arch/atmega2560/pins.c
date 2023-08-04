@@ -3,7 +3,7 @@
  * @version 2023
  **/
 
-#include "pins.h"
+#include "../include/pins.h"
 #include <avr/io.h>
 
 //Create a mapping 1:1 with arduino'pins

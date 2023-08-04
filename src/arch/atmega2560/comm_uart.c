@@ -5,11 +5,11 @@
  * Different functions have to be made, in order to send and receive
  * bytes.
  **/
-#include "uart.h"
+#include "../include/uart.h"
 #include <avr/io.h>
 #include <avr/interrupt.h>
 
-#include "digio.h"
+#include "../include/digio.h"
 
 #define BUF_SIZE 256
 

@@ -3,11 +3,10 @@
 */
 
 #include "beth_joint_internal.h"
-#include "digio.h"
-#include "pwm.h"
-#include "encoder.h"
-
-#include "uart.h"
+#include "../arch/include/digio.h"
+#include "../arch/include/pwm.h"
+#include "../arch/include/encoder.h"
+#include "../arch/include/uart.h"
 #include <stdio.h>
 
 

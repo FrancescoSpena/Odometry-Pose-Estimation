@@ -3,8 +3,8 @@
  * @version 2023
 */
 
-#include "pwm.h"
-#include "pins.h"
+#include "../include/pwm.h"
+#include "../include/pins.h"
 #include <avr/io.h>
 #include <avr/interrupt.h> 
 

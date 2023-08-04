@@ -3,8 +3,8 @@
 */
 
 #include "beth_globals.h"
-#include "packet_operations.h"
-#include "beth_comm.h"
+#include "../common/packet_operations.h"
+#include "../common/beth_comm.h"
 
 PacketHeader* header;
 MotorControlPacket motor1_control = {

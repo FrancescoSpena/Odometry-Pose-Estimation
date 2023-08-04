@@ -3,8 +3,8 @@
  * @version 2023
 */
 
-#include "digio.h"
-#include "pins.h"
+#include "../include/digio.h"
+#include "../include/pins.h"
 #include <avr/io.h>
 
 #define PIN_NUMBER 14 //0 --> 13 digital pin

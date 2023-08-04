@@ -3,8 +3,8 @@
 */
 
 #pragma once
-#include "beth_packets.h"
 #include "beth_joint_internal.h"
+#include "../common/beth_packets.h"
 
 typedef struct DiffDrive{
     DifferentialDriveStatusPacket* status;

@@ -1,16 +1,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include "beth_client.h"
-#include "print_packets.h"
-#include "../packet_operations.h"
+#include "beth_host.h"
+#include "../src/common/print_packets.h"
+#include "../src/common/packet_operations.h"
 #include <pthread.h>
 
 #define NUM_THREAD 2
 int flag_read;
 
 
-BethClient client;
+BethHost host;
 
 MotorStatusPacket packet = {
     {
@@ -27,11 +27,10 @@ MotorStatusPacket packet = {
 
 PacketHandler handler;
 
-void* statusRoutine(void* client){
-    //printf("In status routine\n");
+void* statusRoutine(void* host){
     char buf[256];
-    BethClient* cli = (BethClient*)client;
-    int fd = cli->serial_fd;
+    BethHost* hos = (BethHost*)host;
+    int fd = hos->serial_fd;
     uint8_t c;
     PacketStatus status = UnknownType;
     int n;
@@ -50,51 +49,36 @@ void* statusRoutine(void* client){
     }
 }
 
-void* echoRoutine(void* client){
-    BethClient* cli = (BethClient*)client;
-    int fd = cli->serial_fd;
+void* echoRoutine(void* host){
+    BethHost* hos = (BethHost*)host;
+    int fd = hos->serial_fd;
     uint8_t c;
     while(1){
         int n = read(fd,&c,1);
         if(n){
             printf("ricevuto:");
-            /*for(int i=0; i < 8; i++){
-                printf("%d", !!((c << i) & 0x80));
-            }*/
             printf("%c",c);
             printf("\n");
         }
     }
 }
 
-/*
-La trasmissione può essere fatta solo con singoli 
-char, è possibile iterare su un buffer ma bisogna
-sempre fare attenzione con la write 
-*/
-
 int main(void){
-    BethClient_init(&client,"/dev/ttyACM0",19200);
+    BethHost_init(&host,"/dev/ttyACM0",19200);
     PacketHandler_init(&handler);
-    //PacketHandler_addOperation(&handler,&motor_status_op);
 
 
-    //pthread_t thread;
-    //pthread_create(&thread,NULL,statusRoutine,&client);
+    pthread_t thread;
+    pthread_create(&thread,NULL,statusRoutine,&host);
 
-    //char buf[256];
+    char buf[256];
 
     while(1){
-        BethClient_sendPacket(&client,&packet.h);
-        //printPacket(&packet.h,buf);
-        //printf("Sent:\n");
-        //printf("%s\n",buf);
+        BethHost_sendPacket(&host,&packet.h);
+        printPacket(&packet.h,buf);
+        printf("Sent:\n");
+        printf("%s\n",buf);
         sleep(1);
     }
-
-
-
-    
-
     return 0;
 }

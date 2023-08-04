@@ -1,5 +1,5 @@
 #include "beth_comm.h"
-#include "comm_uart.h"
+#include "../arch/include/comm_uart.h"
 #include <string.h>
 
 typedef void (*ReceiveFn)(PacketHeader*h);

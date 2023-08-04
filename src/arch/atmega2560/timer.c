@@ -2,7 +2,7 @@
  * timer.c
 */
 
-#include "timer.h"
+#include "../include/timer.h"
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <string.h>

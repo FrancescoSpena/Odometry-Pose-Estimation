@@ -5,8 +5,8 @@
 #include "beth_joint.h"
 #include "beth_joint_internal.h"
 #include "beth_globals.h"
-#include "encoder.h"
-#include "pwm.h"
+#include "../arch/include/encoder.h"
+#include "../arch/include/pwm.h"
 
 
 void BethJoints_init(void){

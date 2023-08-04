@@ -2,7 +2,7 @@
  * encoder.c 
 */
 
-#include "encoder.h"
+#include "../include/encoder.h"
 #include <avr/io.h> 
 #include <avr/interrupt.h> 
 

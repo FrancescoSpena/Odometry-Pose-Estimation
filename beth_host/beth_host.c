@@ -1,7 +1,7 @@
-#include "beth_client.h"
-#include "../packet_handler.h"
+#include "beth_host.h"
+#include "../src/common/packet_handler.h"
 #include "serial.h"
-#include "print_packets.h"
+#include "../src/common/print_packets.h"
 #include <stdio.h>
 #include <unistd.h>
 
@@ -10,18 +10,18 @@
 char buf[256];
 
 //Inizialize the packet handler
-void BethClient_init(BethClient* c, char* dev, int speed){
-    c->serial_fd=setupSerial(dev,speed);
-    if(c->serial_fd < 0){
+void BethHost_init(BethHost* h, char* dev, int speed){
+    h->serial_fd=setupSerial(dev,speed);
+    if(h->serial_fd < 0){
         return;
     }
-    PacketHandler_init(&c->ph);
+    PacketHandler_init(&h->ph);
 }
 
-PacketStatus BethClient_sendPacket(BethClient* c, PacketHeader* h){
-    PacketHandler handler = c->ph;
-    PacketStatus ret = PacketHandler_sendPacket(&c->ph,h);
-    int fd = c->serial_fd;
+PacketStatus BethHost_sendPacket(BethHost* host, PacketHeader* h){
+    PacketHandler handler = host->ph;
+    PacketStatus ret = PacketHandler_sendPacket(&host->ph,h);
+    int fd = host->serial_fd;
     ssize_t size = 0;
     uint8_t bytes = PacketHandler_txSize(&handler);
     for(int i=0; i < bytes; i++){

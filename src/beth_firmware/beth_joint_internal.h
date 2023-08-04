@@ -4,7 +4,7 @@
 
 #pragma once 
 #include <stdint.h>
-#include "beth_packets.h"
+#include "../common/beth_packets.h"
 
 
 typedef struct{
