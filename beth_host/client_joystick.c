@@ -19,7 +19,7 @@ int flag_read;
 #define AXYS3 3
 #define AXYS4 4
 #define TYPE2 2
-//#define COMMON_ARDUINO
+#define COMMON_ARDUINO
 
 
 BethHost host;

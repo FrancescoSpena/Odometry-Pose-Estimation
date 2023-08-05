@@ -27,8 +27,7 @@ void DifferentialDriveController_control(DifferentialDriveController* ctr){
     float tv_des=ctr->control->translational_velocity; //trans speed
     float rv_des=ctr->control->rotational_velocity;    //rotational speed
 
-    printf("velocita tras = %d\t, velocita rotazionale = %d\n", (int)tv_des,(int)rv_des);
-
+    
     /**
      * Compute this:
      * 
