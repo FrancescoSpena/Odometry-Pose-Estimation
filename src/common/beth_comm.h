@@ -3,4 +3,4 @@
 #include "../common/beth_packets.h"
 #include <stdint.h>
 
-void BethComm_receiveFn(PacketHeader* _h, void*);
+void BethComm_receiveFn(PacketHeader* _h, void* _null);

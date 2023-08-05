@@ -32,12 +32,15 @@ void statusRoutine(struct Uart* uart){
             while(status != ChecksumSuccess){
                 c = Uart_read(uart);
                 status = PacketHandler_readByte(&handler,c);
-                Uart_write(uart,c);
+                //Uart_write(uart,c);
             }
-            _delay_ms(500);
             status = UnknownType;
+            BethComm_receiveFn(handler.current_packet,0);
+            printf("tv:%d rv:%d\n",
+                    (int)drive_control.translational_velocity,(int)drive_control.rotational_velocity);
+            fflush(stdout);
         }
-        _delay_ms(500);
+        _delay_ms(1000);
     }
 }
 

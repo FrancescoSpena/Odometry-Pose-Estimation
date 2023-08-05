@@ -14,6 +14,13 @@
 #define NUM_THREAD 2
 int flag_read;
 
+#define AXYS0 0
+#define AXYS1 1
+#define AXYS3 3
+#define AXYS4 4
+#define TYPE2 2
+//#define COMMON_ARDUINO
+
 
 BethHost host;
 
@@ -72,8 +79,11 @@ void* readJoystick(void* _fd){
     int fd = *(int*)_fd;
     while(1){
         while(read(fd,&e,sizeof(e)) > 0){
-            if(e.number == 0 && e.type == 2){
+            if(e.number == AXYS0 && e.type == TYPE2){
                 packet.translational_velocity=abs(e.value%255);
+            }
+            if(e.number == AXYS3 && e.type == TYPE2){
+                packet.rotational_velocity=abs(e.value%255);
             }
         }
     }
@@ -84,10 +94,13 @@ int main(void){
     int fd_joy = open("/dev/input/js1",O_RDONLY);
     PacketHandler_init(&handler);
 
-
+    #ifdef COMMON_ARDUINO
     pthread_t thread_status_routine;
+    #endif
     pthread_t thread_read_joystick;
+    #ifdef COMMON_ARDUINO
     pthread_create(&thread_status_routine,NULL,statusRoutine,&host);
+    #endif
     pthread_create(&thread_read_joystick,NULL,readJoystick,&fd_joy);
 
     char buf[256];
@@ -97,6 +110,7 @@ int main(void){
         printPacket(&packet.h,buf);
         printf("Sent:\n");
         printf("%s\n",buf);
+        sleep(1);
     }
     return 0;
 }

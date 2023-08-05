@@ -17,6 +17,7 @@ void BethJoints_init(void){
     return;
 }
 
+//Send commands to joints
 void BethJoints_handle(void){
     Encoder_sample();
     for(int i=0; i < NUM_JOINTS; ++i){
