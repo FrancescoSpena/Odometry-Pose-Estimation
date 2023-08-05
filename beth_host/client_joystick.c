@@ -4,6 +4,7 @@
 #include "beth_host.h"
 #include "../src/common/print_packets.h"
 #include "../src/common/packet_operations.h"
+#include "../src/common/joystick.h"
 #include <pthread.h>
 #include <linux/joystick.h>
 #include <sys/types.h>
@@ -74,24 +75,23 @@ void* echoRoutine(void* host){
     }
 }
 
-void* readJoystick(void* _fd){
-    struct js_event e;
+void* readJoystickRoutine(void* _fd){
     int fd = *(int*)_fd;
     while(1){
-        while(read(fd,&e,sizeof(e)) > 0){
-            if(e.number == AXYS0 && e.type == TYPE2){
-                packet.translational_velocity=abs(e.value%255);
-            }
-            if(e.number == AXYS3 && e.type == TYPE2){
-                packet.rotational_velocity=abs(e.value%255);
-            }
+        int left = readJoystick(fd,GYROSCOPE_AXYSY_LEFT);
+        int right = readJoystick(fd,GYROSCOPE_AXYSY_RIGHT);
+        if(left != -1){
+            packet.translational_velocity=abs(left%255);
+        }
+        if(right != -1){
+            packet.rotational_velocity=abs(right%255);
         }
     }
 }
 
 int main(void){
     BethHost_init(&host,"/dev/ttyACM0",19200);
-    int fd_joy = open("/dev/input/js1",O_RDONLY);
+    int fd_joy = openJoystick("/dev/input/js1");
     PacketHandler_init(&handler);
 
     #ifdef COMMON_ARDUINO
@@ -101,15 +101,15 @@ int main(void){
     #ifdef COMMON_ARDUINO
     pthread_create(&thread_status_routine,NULL,statusRoutine,&host);
     #endif
-    pthread_create(&thread_read_joystick,NULL,readJoystick,&fd_joy);
+    pthread_create(&thread_read_joystick,NULL,readJoystickRoutine,&fd_joy);
 
-    char buf[256];
+    //char buf[256];
 
     while(1){
         BethHost_sendPacket(&host,&packet.h);
-        printPacket(&packet.h,buf);
-        printf("Sent:\n");
-        printf("%s\n",buf);
+        //printPacket(&packet.h,buf);
+        //printf("Sent:\n");
+        //printf("%s\n",buf);
         sleep(1);
     }
     return 0;
