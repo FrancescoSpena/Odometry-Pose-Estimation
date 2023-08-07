@@ -36,7 +36,7 @@ void statusRoutine(struct Uart* uart){
             }
             status = UnknownType;
         }
-        _delay_ms(200);
+        _delay_ms(500);
     }
 }
 

@@ -32,5 +32,5 @@
 
 //Open device in read only and return fd
 int openJoystick(const char* _device);
-//Return 0 if success, else -1 
+//Return button value if success, else -1 
 int readJoystick(int _fd, int _name_button);

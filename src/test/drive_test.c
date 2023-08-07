@@ -29,11 +29,11 @@ void statusRoutine(struct Uart* uart){
         while(status != ChecksumSuccess){
             c = Uart_read(uart);
             status = PacketHandler_readByte(&handler,c);
-            Uart_write(uart,c);
+            //Uart_write(uart,c);
         }
         status = UnknownType;
     }
-    _delay_ms(1000);
+    _delay_ms(500);
 }
 
 int main(void){
