@@ -12,6 +12,8 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <semaphore.h>
+#include <ncurses.h>
+#include <string.h>
 
 #define U_SECOND 500000
 
@@ -87,7 +89,7 @@ void* readJoystickRoutine(void* _fd){
     }
 }
 
-void mainRoutine(int fd_joy, char buf){
+void _mainRoutine(int fd_joy, char buf){
     int flag = 0;
     int x = -1;
     int circle = -1;
@@ -154,8 +156,102 @@ void mainRoutine(int fd_joy, char buf){
     }
 }
 
+void mainRoutineNcourses(int fd_joy){
+    //ncurses start
+    initscr();			
+	noecho();
+    cbreak();
+    
+    //code
+
+    int height, width, start_y, start_x; 
+    height = 20; 
+    width = 80; 
+    start_y = 0;
+    start_x = 0;
+
+    WINDOW* win = newwin(height,width,start_y,start_x);
+    refresh();
+
+    box(win,0,0);
+    mvwprintw(win,8,27,"Welcome to beth firmware");
+    mvwprintw(win,9,27,"Press any key to continue");
+    mvwprintw(win,18,1,"Create by Francesco Spena");
+    mvwprintw(win,18,69,"2023/2024");
+    wrefresh(win);
+    getch();
+    wclear(win);
+    
+    mvwprintw(win,0,1,"Select a mode:");
+    mvwprintw(win,1,1,"1. Gyroscope");
+    mvwprintw(win,2,1,"2. Constant speed");
+    mvwprintw(win,3,1,"3. One motor");
+    mvwprintw(win,4,1,"Enter: ");
+    wrefresh(win);
+    char c = getch();
+    wclear(win);
+    switch(c){
+        case '1':
+            mvwprintw(win,0,32,"Gyroscope mode");
+            mvwprintw(win,2,1,"Rotate left/right gyroscope for command robot, triangle to exit");
+            wrefresh(win);
+            while(1){
+                int left = readJoystick(fd_joy,GYROSCOPE_AXYSY_LEFT);
+                int right = readJoystick(fd_joy,GYROSCOPE_AXYSY_RIGHT);
+                if(left != -1 || right != -1){
+                    mvwprintw(win,3,1,"Speed left:%d, Speed right:%d",left,right);
+                }
+                if(readJoystick(fd_joy,BUTTON_TRIANGLE) != -1){
+                    break;
+                } 
+            }
+            break;
+        case '2':
+            int speed = 0;
+            mvwprintw(win,0,32,"Constant speed mode");
+            mvwprintw(win,2,1,"Select with Up/Down button the speed, triangle to select:");
+            wrefresh(win);
+            while(1){
+                if(readJoystick(fd_joy,BUTTON_UP) != -1){
+                    speed+=50;
+                    if(speed >= 255) speed = 255;
+                }
+                if(readJoystick(fd_joy,BUTTON_DOWN) != -1){
+                    speed-=50;
+                    if(speed <= 0) speed = 0;
+                }
+                if(readJoystick(fd_joy,BUTTON_TRIANGLE) != -1){
+                    packet.translational_velocity=speed;
+                    break;
+                }
+                mvwprintw(win,3,1,"Speed: %d",speed);
+                wrefresh(win);
+            }
+            //Fare velocità rotazionale
+            mvwprintw(win,4,1,"You are selected speed:%d, rotational speed:%d",
+                                (int)packet.translational_velocity,
+                                (int)packet.rotational_velocity);
+            wrefresh(win);
+            break;
+        case '3':
+            mvwprintw(win,0,32,"One motor mode");
+            wrefresh(win);
+            break;
+        default:
+            break;
+    }
+
+
+    //code
+    
+    //ncurses end
+    getch();
+	endwin();
+    return;
+}
+
 int main(void){
-    sem_init(&sem,0,1);
+    /*sem_init(&sem,0,1);
     BethHost_init(&host,"/dev/ttyACM0",19200);
     int fd_joy = openJoystick("/dev/input/js1");
     PacketHandler_init(&handler);
@@ -176,7 +272,9 @@ int main(void){
             sem_post(&sem);
         }
         usleep(U_SECOND);
-    }
+    }*/
+    int fd_joy = openJoystick("/dev/input/js1");
+    mainRoutineNcourses(fd_joy);
 
     return 0;
 }

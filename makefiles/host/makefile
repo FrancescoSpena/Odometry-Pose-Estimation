@@ -5,6 +5,6 @@ OBJS = ../../beth_host/beth_host.c ../../beth_host/host_joystick.c  ../../beth_h
 OBJS += ../../src/common/packet_handler.c ../../src/common/print_packets.c ../../src/common/joystick.c
 
 main: $(OBJS) 
-	gcc -Wall -O3 -o host $(OBJS) 
+	gcc -Wall -O3 -o host $(OBJS) -lncurses -lpanel
 clean:
 	rm host
