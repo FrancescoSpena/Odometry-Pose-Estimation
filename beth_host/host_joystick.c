@@ -11,14 +11,13 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <semaphore.h>
 
-#define NUM_THREAD 2
-int flag_read;
+#define U_SECOND 500000
 
-#define DEBUG
-
-
+int flag_read = 0;
 BethHost host;
+sem_t sem;
 
 DifferentialDriveControlPacket packet = {
     {
@@ -73,52 +72,22 @@ void* echoRoutine(void* host){
 void* readJoystickRoutine(void* _fd){
     int fd = *(int*)_fd;
     while(1){
+        sem_wait(&sem);
         int left = readJoystick(fd,GYROSCOPE_AXYSY_LEFT);
         int right = readJoystick(fd,GYROSCOPE_AXYSY_RIGHT);
         if(left != -1){
             packet.translational_velocity=abs(left%255);
+            flag_read = 1;
         }
         if(right != -1){
             packet.rotational_velocity=abs(right%255);
+            flag_read = 1;
         }
+        sem_post(&sem);
     }
 }
 
-
-
-int main(void){
-    BethHost_init(&host,"/dev/ttyACM0",19200);
-    int fd_joy = openJoystick("/dev/input/js1");
-    PacketHandler_init(&handler);
-    #ifdef DEBUG
-    char buf[256];
-    #endif
-
-    #ifdef DEBUG
-    pthread_t thread_status_routine;
-    #endif
-    #ifdef DEBUG
-    pthread_create(&thread_status_routine,NULL,statusRoutine,&host);
-    #endif
-    pthread_t thread_read_joystick;
-    pthread_create(&thread_read_joystick,NULL,readJoystickRoutine,&fd_joy);
-
-    /*
-    x --> press --> 0 
-    circle --> press --> 1
-    up --> press --> 0
-    down --> press --> 1
-    triangle --> press --> 1
-    */
-    /*while(1){
-        int x = readJoystick(fd_joy,BUTTON_X);
-        int circle = readJoystick(fd_joy,BUTTON_CIRCLE);
-        int up = readJoystick(fd_joy,BUTTON_UP);
-        int down = readJoystick(fd_joy,BUTTON_DOWN);
-        int triangle = readJoystick(fd_joy,BUTTON_TRIANGLE);
-        printf("x:%d\t circle:%d\t up:%d\t down:%d\t triangle:%d\n",x,circle,up,down,triangle);
-    }*/
-
+void mainRoutine(int fd_joy, char buf){
     int flag = 0;
     int x = -1;
     int circle = -1;
@@ -183,14 +152,31 @@ int main(void){
         }
         packet.rotational_velocity=speed;
     }
+}
+
+int main(void){
+    sem_init(&sem,0,1);
+    BethHost_init(&host,"/dev/ttyACM0",19200);
+    int fd_joy = openJoystick("/dev/input/js1");
+    PacketHandler_init(&handler);
+    pthread_t thread_status_routine;
+    pthread_create(&thread_status_routine,NULL,statusRoutine,&host);
+    pthread_t thread_read_joystick;
+    pthread_create(&thread_read_joystick,NULL,readJoystickRoutine,&fd_joy);
+
+    char buf[256];
     while(1){
-        BethHost_sendPacket(&host,&packet.h);
-        #ifdef DEBUG
+        if(flag_read == 1){
+            sem_wait(&sem);
+            BethHost_sendPacket(&host,&packet.h);
             printf("Sent:\n");
             printPacket(&packet.h,buf);
             printf("%s\n",buf);
-            #endif
-        sleep(1);
+            flag_read = 0;
+            sem_post(&sem);
+        }
+        usleep(U_SECOND);
     }
+
     return 0;
 }
