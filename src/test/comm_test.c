@@ -40,9 +40,18 @@ void statusRoutine(struct Uart* uart){
     }
 }
 
+//TODO function to send packet to arduino
+
 int main(void){
     printf_init();
     struct Uart* uart = Uart_init(19200);
     PacketHandler_init(&handler);
-    statusRoutine(uart);
+    PacketHandler_addOperation(&handler,&diff_drive_control_op);
+    while(1){
+        statusRoutine(uart);
+        BethComm_sendPacket(&handler,&drive_control.h,uart);
+        BethComm_sendPacket(&handler,&drive_status.h,uart);
+        BethComm_sendPacket(&handler,&drive_params.h,uart);
+        _delay_ms(1000);
+    }
 }

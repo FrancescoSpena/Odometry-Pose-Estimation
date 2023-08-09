@@ -33,12 +33,3 @@ PacketStatus BethHost_sendPacket(BethHost* host, PacketHeader* h){
     }
     return ret;
 }
-
-void recvFn(PacketHeader* recvp, void* _args){
-    PacketHeader* dest = (PacketHeader*)_args;
-    memcpy(dest,recvp,dest->size);
-    printPacket(recvp,buf);
-    printf("\33[2K");
-    printf("%s\r", buf);
-    fflush(stdout);
-}

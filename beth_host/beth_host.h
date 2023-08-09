@@ -10,4 +10,3 @@ typedef struct{
 
 void BethHost_init(BethHost*, char* dev, int speed);
 PacketStatus BethHost_sendPacket(BethHost*, PacketHeader*);
-void recvFn(PacketHeader*, void* _args);

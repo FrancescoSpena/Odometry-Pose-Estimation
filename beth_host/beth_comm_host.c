@@ -1,8 +1,5 @@
-#include "beth_comm.h"
-#include "../arch/include/comm_uart.h"
-#include "packet_handler.h"
+#include "beth_comm_host.h"
 #include <string.h>
-#include <util/delay.h>
 #include <stdio.h>
 
 typedef void (*ReceiveFn)(PacketHeader*h);
@@ -154,15 +151,4 @@ void BethComm_receiveFn(PacketHeader* _h, void* _null){
     ReceiveFn fn = received_packet_ops[_h->id].receive_fn;
     (*fn)(_h);
     return;
-}
-
-PacketStatus BethComm_sendPacket(PacketHandler* handler, PacketHeader* _h, struct Uart* uart){
-    PacketStatus ret = PacketHandler_sendPacket(handler,_h);
-    uint8_t bytes = PacketHandler_txSize(handler);
-    uint8_t c;
-    for(int i=0; i < bytes; i++){
-        c = PacketHandler_popByte(handler);
-        Uart_write(uart,c);
-    }
-    return ret;
 }

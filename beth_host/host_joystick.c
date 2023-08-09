@@ -14,6 +14,8 @@
 #include <semaphore.h>
 #include <ncurses.h>
 #include <string.h>
+#include "packet_structure.h"
+#include "beth_comm_host.h"
 
 #define U_SECOND 500000
 
@@ -33,10 +35,16 @@ DifferentialDriveControlPacket packet = {
     .rotational_velocity=0,
 };
 
+/**
+ * ordine arrivo pacchetti statusRoutine: 
+ * - status
+ * - control 
+ * - params
+*/
+
 PacketHandler handler;
 
 void* statusRoutine(void* host){
-    char buf[256];
     BethHost* hos = (BethHost*)host;
     int fd = hos->serial_fd;
     uint8_t c;
@@ -50,10 +58,7 @@ void* statusRoutine(void* host){
             }
         }
         status=UnknownType;
-        printf("Received:\n");
-        PacketHeader* recv = handler.current_packet;
-        printPacket(recv,buf);
-        printf("%s\n",buf);
+        BethComm_receiveFn(handler.current_packet,0);
     }
 }
 
@@ -69,6 +74,7 @@ void* echoRoutine(void* host){
             printf("\n");
         }
     }
+    return 0;
 }
 
 void* readJoystickRoutine(void* _fd){
@@ -89,80 +95,23 @@ void* readJoystickRoutine(void* _fd){
     }
 }
 
-void _mainRoutine(int fd_joy, char buf){
-    int flag = 0;
-    int x = -1;
-    int circle = -1;
-    printf("Select mode\n");
-    printf("X for giroscope\n");
-    printf("○ for constant\n");
-    while(flag == 0){
-        if(x == 0 || circle == 1){
-            flag = 1;
-        }
-        x = readJoystick(fd_joy,BUTTON_X);
-        circle = readJoystick(fd_joy,BUTTON_CIRCLE);
+void mainRoutineNcourses(int fd_joy){
+    if(fd_joy < 0){
+        return;
     }
     
-    if(x == 0){
-        printf("Move giroscope to command robot\n");
-        while(1){
-            BethHost_sendPacket(&host,&packet.h);
-            printf("Tran Speed:%f\t Rotational speed:%f\n",packet.translational_velocity,packet.rotational_velocity);
-            #ifdef DEBUG
-            printf("Sent:\n");
-            printPacket(&packet.h,buf);
-            printf("%s\n",buf);
-            #endif
-            sleep(1);
-        }
-    }
-    if(circle == 1){
-        int speed = 0;
-        printf("Speed:%d\n",speed);
-        printf("Press Up/Down button to modify the speed, △ to select\n");
-        int triangle = readJoystick(fd_joy,BUTTON_TRIANGLE);
-        while(triangle == -1){
-            if(readJoystick(fd_joy,BUTTON_UP) != -1){
-                speed+=50;
-                if(speed >= 255) speed = 255;
-                printf("Speed:%d\n",speed);
-            }
-            if(readJoystick(fd_joy,BUTTON_DOWN) != -1){
-                speed-=50;
-                if(speed <= 0) speed = 0;
-                printf("Speed:%d\n",speed);
-            }
-            triangle = readJoystick(fd_joy,BUTTON_TRIANGLE);
-        }
-        triangle = -1;
-        printf("Now press Up/Down button to modify rotational speed, △ to select\n");
-        packet.translational_velocity=speed;
-        speed = 0;
-        while(triangle == -1){
-            if(readJoystick(fd_joy,BUTTON_UP) != -1){
-                speed+=50;
-                if(speed >= 255) speed = 255;
-                printf("Speed:%d\n",speed);
-            }
-            if(readJoystick(fd_joy,BUTTON_DOWN) != -1){
-                speed-=50;
-                if(speed <= 0) speed = 0;
-                printf("Speed:%d\n",speed);
-            }
-            triangle = readJoystick(fd_joy,BUTTON_TRIANGLE); 
-        }
-        packet.rotational_velocity=speed;
-    }
-}
-
-void mainRoutineNcourses(int fd_joy){
     //ncurses start
     initscr();			
 	noecho();
     cbreak();
     
+    if(has_colors() == FALSE){
+        printf("Your terminal does not support color\n");
+    }
+
     //code
+
+    start_color();
 
     int height, width, start_y, start_x; 
     height = 20; 
@@ -182,11 +131,11 @@ void mainRoutineNcourses(int fd_joy){
     getch();
     wclear(win);
     
-    mvwprintw(win,0,1,"Select a mode:");
-    mvwprintw(win,1,1,"1. Gyroscope");
-    mvwprintw(win,2,1,"2. Constant speed");
-    mvwprintw(win,3,1,"3. One motor");
-    mvwprintw(win,4,1,"Enter: ");
+    mvwprintw(win,7,20,"Select a mode:");
+    mvwprintw(win,8,20,"1. Gyroscope");
+    mvwprintw(win,9,20,"2. Constant speed");
+    mvwprintw(win,10,20,"3. One motor");
+    mvwprintw(win,9,50,"Enter: ");
     wrefresh(win);
     char c = getch();
     wclear(win);
@@ -195,43 +144,100 @@ void mainRoutineNcourses(int fd_joy){
             mvwprintw(win,0,32,"Gyroscope mode");
             mvwprintw(win,2,1,"Rotate left/right gyroscope for command robot, triangle to exit");
             wrefresh(win);
-            while(1){
-                int left = readJoystick(fd_joy,GYROSCOPE_AXYSY_LEFT);
-                int right = readJoystick(fd_joy,GYROSCOPE_AXYSY_RIGHT);
-                if(left != -1 || right != -1){
-                    mvwprintw(win,3,1,"Speed left:%d, Speed right:%d",left,right);
-                }
-                if(readJoystick(fd_joy,BUTTON_TRIANGLE) != -1){
-                    break;
-                } 
-            }
+            //TODO
             break;
         case '2':
             int speed = 0;
             mvwprintw(win,0,32,"Constant speed mode");
-            mvwprintw(win,2,1,"Select with Up/Down button the speed, triangle to select:");
+            mvwprintw(win,2,1,"Set translational speed:");
+            mvwprintw(win,3,1,"Enter:");
             wrefresh(win);
-            while(1){
-                if(readJoystick(fd_joy,BUTTON_UP) != -1){
-                    speed+=50;
-                    if(speed >= 255) speed = 255;
-                }
-                if(readJoystick(fd_joy,BUTTON_DOWN) != -1){
-                    speed-=50;
-                    if(speed <= 0) speed = 0;
-                }
-                if(readJoystick(fd_joy,BUTTON_TRIANGLE) != -1){
-                    packet.translational_velocity=speed;
-                    break;
-                }
-                mvwprintw(win,3,1,"Speed: %d",speed);
-                wrefresh(win);
+            //input to key, print speed
+            //TODO
+            //rotational speed
+            speed = 0;
+            mvwprintw(win,4,1,"Set rotational speed:");
+            mvwprintw(win,5,1,"Enter:");
+            wrefresh(win);
+            //input to key, print speed
+            //TODO
+            //Send packet with information
+            wclear(win);
+            int i = 0;
+            drive_control.translational_velocity = 100;
+            drive_control.rotational_velocity = 50;
+            while(i != 2){
+                BethHost_sendPacket(&host,&drive_control.h);
+                i++;
+                usleep(U_SECOND);
             }
-            //Fare velocità rotazionale
-            mvwprintw(win,4,1,"You are selected speed:%d, rotational speed:%d",
-                                (int)packet.translational_velocity,
-                                (int)packet.rotational_velocity);
+            //Info 
+            mvwprintw(win,0,32,"Common information");
+            WINDOW* win_status;
+            //status box
+            int height_status,widht_status,start_y_status,start_x_status;
+            height_status = 15;
+            widht_status = 32;
+            start_y_status = 2;
+            start_x_status = 5;
+            win_status = newwin(height_status,widht_status,start_y_status,start_x_status);
+            box(win_status,0,0);
+            wprintw(win_status,"Status Box");
+            //info print packet
+            mvwprintw(win_status,2,1,"Translational Speed Measured:");
+            mvwprintw(win_status,3,1,"%f",drive_status.translational_velocity_measured);
+            mvwprintw(win_status,4,1,"Rotational Speed Measured:");
+            mvwprintw(win_status,5,1,"%f",drive_status.rotational_velocity_measured);
+            mvwprintw(win_status,6,1,"Translational Speed Desired:");
+            mvwprintw(win_status,7,1,"%f",drive_status.translational_velocity_desired);
+            mvwprintw(win_status,8,1,"Rotational Speed Desired:");
+            mvwprintw(win_status,9,1,"%f",drive_status.rotational_velocity_desired);
+            mvwprintw(win_status,10,1,"Odometry x,y,theta:");
+            mvwprintw(win_status,11,1,"%f",drive_status.odom_x);
+            mvwprintw(win_status,12,1,"%f",drive_status.odom_y);
+            mvwprintw(win_status,13,1,"%f",drive_status.odom_theta);
+
+            
+            //refresh
             wrefresh(win);
+            wrefresh(win_status);
+            //control box
+            WINDOW* win_control;
+            int height_control,widht_control,start_y_control,start_x_control;
+            height_control = 8;
+            widht_control = 30;
+            start_y_control = 2;
+            start_x_control = 42;
+            win_control = newwin(height_control,widht_control,start_y_control,start_x_control);
+            box(win_control,0,0);
+            wprintw(win_control,"Control Box");
+            mvwprintw(win_control,2,1,"Translational Speed:");
+            mvwprintw(win_control,3,1,"%f",drive_control.translational_velocity);
+            mvwprintw(win_control,4,1,"Rotational Speed:");
+            mvwprintw(win_control,5,1,"%f",drive_control.rotational_velocity);
+            //refresh
+            wrefresh(win);
+            wrefresh(win_control);
+
+            //param box
+            WINDOW* win_params;
+            int height_params,widht_params,start_y_params,start_x_params;
+            height_params = 8;
+            widht_params = 30;
+            start_y_params = 10;
+            start_x_params = 42;
+            win_params = newwin(height_params,widht_params,start_y_params,start_x_params);
+            box(win_params,0,0);
+            wprintw(win_params,"Params Box");
+            mvwprintw(win_params,2,1,"Radius Wheel:");
+            mvwprintw(win_params,3,1,"%f",drive_params.radius_wheel);
+            mvwprintw(win_params,4,1,"Distance:");
+            mvwprintw(win_params,5,1,"%f",drive_params.distance);
+
+            //refresh
+            wrefresh(win);
+            wrefresh(win_params);
+            
             break;
         case '3':
             mvwprintw(win,0,32,"One motor mode");
@@ -245,6 +251,9 @@ void mainRoutineNcourses(int fd_joy){
     //code
     
     //ncurses end
+    //wclear(win);
+    //mvwprintw(win,8,30,"Bye!!! Come back soon :)");
+    //wrefresh(win);
     getch();
 	endwin();
     return;
@@ -273,8 +282,19 @@ int main(void){
         }
         usleep(U_SECOND);
     }*/
+
+    BethHost_init(&host,"/dev/ttyACM0",19200);
     int fd_joy = openJoystick("/dev/input/js1");
+    PacketHandler_init(&handler);
+    pthread_t thread_status_routine;
+    pthread_create(&thread_status_routine,NULL,statusRoutine,&host);
+    
     mainRoutineNcourses(fd_joy);
+
+
+    
+    /*int fd_joy = openJoystick("/dev/input/js1");
+    mainRoutineNcourses(fd_joy);*/
 
     return 0;
 }
