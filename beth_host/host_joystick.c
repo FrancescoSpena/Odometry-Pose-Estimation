@@ -144,7 +144,9 @@ void mainRoutineNcourses(int fd_joy){
             mvwprintw(win,0,32,"Gyroscope mode");
             mvwprintw(win,2,1,"Rotate left/right gyroscope for command robot, triangle to exit");
             wrefresh(win);
-            //TODO
+            //TODO: mettere il joystick, leggere i dati da li e creare un pacchetto di tipo diff drive control 
+            //e mandare tutto ad arduino ogni volta, in questo caso la comm info dirà solo le velocità che si 
+            //stanno impostando con il joystick + dati con odometria (dentro una box tutti e due)
             break;
         case '2':
             int speed = 0;
@@ -242,6 +244,10 @@ void mainRoutineNcourses(int fd_joy){
         case '3':
             mvwprintw(win,0,32,"One motor mode");
             wrefresh(win);
+
+            //TODO: chiedere se motore 1 o motore 2 e poi attraverso quello si modifica il dest_addr
+            //chiedere velocità desiderata per motore + parametri PID (occhio perchè il PID sta su un'altro pacchetto)
+            //creare comm info anche per questo dove faccio vedere control,status e params del motore
             break;
         default:
             break;
@@ -251,9 +257,9 @@ void mainRoutineNcourses(int fd_joy){
     //code
     
     //ncurses end
-    //wclear(win);
-    //mvwprintw(win,8,30,"Bye!!! Come back soon :)");
-    //wrefresh(win);
+    wclear(win);
+    mvwprintw(win,8,30,"Bye!!! Come back soon :)");
+    wrefresh(win);
     getch();
 	endwin();
     return;
