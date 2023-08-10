@@ -95,10 +95,22 @@ void* readJoystickRoutine(void* _fd){
     }
 }
 
-void mainRoutineNcourses(int fd_joy){
-    if(fd_joy < 0){
-        return;
+void write_str(WINDOW *win, int y, int x, char *str) {
+    while (*str) {
+        switch(*str) {
+        case '\n':
+            break;
+        default:
+            mvwaddch(win,y,x,*str); 
+        }
+        ++str; 
     }
+}
+
+void mainRoutineNcourses(int fd_joy){
+    /*if(fd_joy < 0){
+        return;
+    }*/
     
     //ncurses start
     initscr();			
@@ -153,23 +165,22 @@ void mainRoutineNcourses(int fd_joy){
             mvwprintw(win,0,32,"Constant speed mode");
             mvwprintw(win,2,1,"Set translational speed:");
             mvwprintw(win,3,1,"Enter:");
-            wrefresh(win);
-            //input to key, print speed
-            //TODO
+            mvwscanw(win,3,10,"%d",&speed);
+            mvwprintw(win,3,10,"%d",speed);
+            packet.translational_velocity = speed;
             //rotational speed
             speed = 0;
             mvwprintw(win,4,1,"Set rotational speed:");
             mvwprintw(win,5,1,"Enter:");
+            mvwscanw(win,5,10,"%d",&speed);
+            mvwprintw(win,5,10,"%d",speed);
+            packet.rotational_velocity = speed;
             wrefresh(win);
-            //input to key, print speed
-            //TODO
             //Send packet with information
             wclear(win);
             int i = 0;
-            drive_control.translational_velocity = 100;
-            drive_control.rotational_velocity = 50;
             while(i != 2){
-                BethHost_sendPacket(&host,&drive_control.h);
+                BethHost_sendPacket(&host,&packet.h);
                 i++;
                 usleep(U_SECOND);
             }
@@ -245,9 +256,30 @@ void mainRoutineNcourses(int fd_joy){
             mvwprintw(win,0,32,"One motor mode");
             wrefresh(win);
 
+            
             //TODO: chiedere se motore 1 o motore 2 e poi attraverso quello si modifica il dest_addr
             //chiedere velocità desiderata per motore + parametri PID (occhio perchè il PID sta su un'altro pacchetto)
             //creare comm info anche per questo dove faccio vedere control,status e params del motore
+            
+            mvwprintw(win,1,1,"Which motor do you want to drive?");
+            mvwprintw(win,2,2,"- 0 for motor 1");
+            mvwprintw(win,3,2,"- 1 for motor 2");
+            mvwprintw(win,4,1,"Enter:");
+            int num_motor = -1;
+            speed = 0;
+            mvwscanw(win,4,8,"%d",&num_motor);
+            mvwprintw(win,4,1,"Enter:%d",num_motor);
+            //Fare roba pacchetto
+            mvwprintw(win,5,1,"Select a speed");
+            mvwprintw(win,6,1,"Enter:");
+            mvwscanw(win,6,8,"%d",&speed);
+            mvwprintw(win,6,1,"Enter:%d",speed);
+            //Fare roba pacchetto
+            wrefresh(win);
+
+            //comm info 
+            
+            
             break;
         default:
             break;
@@ -257,10 +289,8 @@ void mainRoutineNcourses(int fd_joy){
     //code
     
     //ncurses end
-    wclear(win);
-    mvwprintw(win,8,30,"Bye!!! Come back soon :)");
-    wrefresh(win);
     getch();
+    wclear(win);
 	endwin();
     return;
 }
