@@ -108,9 +108,10 @@ void write_str(WINDOW *win, int y, int x, char *str) {
 }
 
 void mainRoutineNcourses(int fd_joy){
-    /*if(fd_joy < 0){
+    if(fd_joy < 0){
+        printf("no joystick\n");
         return;
-    }*/
+    }
     
     //ncurses start
     initscr();			
@@ -167,20 +168,20 @@ void mainRoutineNcourses(int fd_joy){
             mvwprintw(win,3,1,"Enter:");
             mvwscanw(win,3,10,"%d",&speed);
             mvwprintw(win,3,10,"%d",speed);
-            packet.translational_velocity = speed;
+            drive_control.translational_velocity=speed;
             //rotational speed
             speed = 0;
             mvwprintw(win,4,1,"Set rotational speed:");
             mvwprintw(win,5,1,"Enter:");
             mvwscanw(win,5,10,"%d",&speed);
             mvwprintw(win,5,10,"%d",speed);
-            packet.rotational_velocity = speed;
+            drive_control.rotational_velocity=speed;
             wrefresh(win);
             //Send packet with information
             wclear(win);
             int i = 0;
-            while(i != 2){
-                BethHost_sendPacket(&host,&packet.h);
+            while(i != 8){
+                BethHost_sendPacket(&host,&drive_control.h);
                 i++;
                 usleep(U_SECOND);
             }
@@ -261,6 +262,7 @@ void mainRoutineNcourses(int fd_joy){
             //chiedere velocità desiderata per motore + parametri PID (occhio perchè il PID sta su un'altro pacchetto)
             //creare comm info anche per questo dove faccio vedere control,status e params del motore
             
+            //motor
             mvwprintw(win,1,1,"Which motor do you want to drive?");
             mvwprintw(win,2,2,"- 0 for motor 1");
             mvwprintw(win,3,2,"- 1 for motor 2");
@@ -269,12 +271,21 @@ void mainRoutineNcourses(int fd_joy){
             speed = 0;
             mvwscanw(win,4,8,"%d",&num_motor);
             mvwprintw(win,4,1,"Enter:%d",num_motor);
-            //Fare roba pacchetto
+            motor1_control.h.dest_addr=num_motor;
+            //speed motor 
             mvwprintw(win,5,1,"Select a speed");
             mvwprintw(win,6,1,"Enter:");
             mvwscanw(win,6,8,"%d",&speed);
             mvwprintw(win,6,1,"Enter:%d",speed);
-            //Fare roba pacchetto
+            motor1_control.speed=speed;
+            int mode = Pid;
+            //mode motor
+            mvwprintw(win,7,1,"Select a mode [Pid = 1, Direct = 0]");
+            mvwprintw(win,8,1,"Enter:");
+            mvwscanw(win,8,8,"%d",&speed);
+            mvwprintw(win,8,1,"Enter:%d",speed);
+            motor1_control.mode=mode;
+            
             wrefresh(win);
 
             //comm info 
@@ -327,10 +338,6 @@ int main(void){
     
     mainRoutineNcourses(fd_joy);
 
-
-    
-    /*int fd_joy = openJoystick("/dev/input/js1");
-    mainRoutineNcourses(fd_joy);*/
 
     return 0;
 }

@@ -50,7 +50,9 @@ int main(void){
     while(1){
         statusRoutine(uart);
         BethComm_sendPacket(&handler,&drive_control.h,uart);
+        _delay_ms(1000);
         BethComm_sendPacket(&handler,&drive_status.h,uart);
+        _delay_ms(1000);
         BethComm_sendPacket(&handler,&drive_params.h,uart);
         _delay_ms(1000);
     }
