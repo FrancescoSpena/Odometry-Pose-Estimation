@@ -12,15 +12,15 @@ struct PacketHandler;
 typedef PacketStatus (*PacketHandlerFn)(struct PacketHandler* h, uint8_t c);
 
 typedef struct PacketHandler{
-    //Operation (not yet)
+    //Operation 
     PacketOperation packet_ops[MAX_PACKET_TYPE];
-    //transmission
+    //Transmission
     uint8_t tx_noble_buffer;
     uint8_t tx_buffer[PACKET_SIZE_MAX];
     uint8_t* tx_start;
     uint8_t* tx_end;
     uint8_t tx_size;
-    //acquisition
+    //Acquisition
     PacketOperation* current_op;
     uint8_t size_op;
     PacketHeader* current_packet;
@@ -29,9 +29,7 @@ typedef struct PacketHandler{
     uint8_t* rx_start;
     uint8_t* rx_end;
     uint8_t rx_checksum;
-
     PacketHandlerFn receive_fn;
-
 }PacketHandler;
 
 void PacketHandler_init(PacketHandler*);
