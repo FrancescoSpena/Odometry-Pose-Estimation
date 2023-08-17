@@ -43,7 +43,6 @@ int16_t clamp(int16_t v, int16_t max){
 }
 
 void BethJoint_handle(BethJoint* j){
-    //Encoder section
     uint8_t enc_idx=j->enc_idx;
     uint16_t prev_ticks=j->status->encoder_ticks;
     j->status->encoder_ticks=Encoder_getValue(enc_idx);
@@ -54,11 +53,8 @@ void BethJoint_handle(BethJoint* j){
     if(j->control->mode == Pid){
         static int16_t perror;
         j->status->desired_speed=j->control->speed;
-        //printf("Desidered speed = %d\n", j->status->desired_speed);
         int16_t error = j->status->desired_speed - j->status->measured_speed;
         int16_t output = 0;
-
-        printf("Speed to enc[%d]= %d\n", j->enc_idx,j->status->measured_speed);
 
         j->params->sum_i += j->params->ki * error * j->params->dt;
         j->params->sum_i = clamp(j->params->sum_i,j->params->max_i);
@@ -74,12 +70,6 @@ void BethJoint_handle(BethJoint* j){
         }
         j->dir = dir;
         j->output = speed;
-
-        //printf("Dir = %d\n", j->dir);
-        //printf("Output = %d\n", j->output);
-
-        //printf("Pin A = %d\t Pin B = %d\t Pin PWM = %d\n", j->params->dir_a_pin, j->params->dir_b_pin, j->params->pwm_pin);
-
 
         digio_setPin(j->params->dir_a_pin, j->dir);
         digio_setPin(j->params->dir_b_pin,!j->dir);
