@@ -6,20 +6,23 @@
 #include "../beth_firmware/beth_drive.h"
 #include "../beth_firmware/beth_joint.h"
 #include "../arch/include/comm_uart.h"
+#include "../arch/include/timer.h"
+#include "../arch/include/pins.h"
+#include "../arch/include/digio.h"
+#include "../arch/include/pwm.h"
 #include "../common/packet_handler.h"
 #include "../beth_firmware/beth_globals.h"
 #include "../common/beth_comm.h"
 
-PacketHandler handler;
+#define PIN 13
 
-void echoRoutine(struct Uart* uart){
-    uint8_t c;
-    while(1){
-        if(Uart_available(uart)){
-            c = Uart_read(uart);
-            Uart_write(uart,c);
-        }
-    } 
+volatile uint8_t comm_flag=0;
+
+PacketHandler handler;
+struct Uart* uart;
+
+void timerCommFn(){
+    comm_flag=1;
 }
 
 void statusRoutine(struct Uart* uart){
@@ -29,23 +32,34 @@ void statusRoutine(struct Uart* uart){
         while(status != ChecksumSuccess){
             c = Uart_read(uart);
             status = PacketHandler_readByte(&handler,c);
-            //Uart_write(uart,c);
         }
         status = UnknownType;
     }
-    _delay_ms(500);
+}
+
+void commFn(void){
+    statusRoutine(uart);
+    BethDrive_handle();
+    BethJoints_handle();
+    comm_flag = 0;
 }
 
 int main(void){
-    struct Uart* uart = Uart_init(19200);
+    uart = Uart_init(19200);
     PacketHandler_init(&handler);
     PacketHandler_addOperation(&handler,&diff_drive_control_op);
     BethJoints_init();
     BethDrive_init();
+    Timer_init();
+
+
+    struct Timer* timer_comm=Timer_create(1000, &timerCommFn, 0);
+
+    Timer_start(timer_comm);
 
     while(1){
-        statusRoutine(uart);
-        BethDrive_handle();
-        BethJoints_handle();
+        if(comm_flag)
+            commFn();
     }
+
 }

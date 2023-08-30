@@ -12,17 +12,16 @@ int flag_read;
 
 BethHost host;
 
-MotorStatusPacket packet = {
+DifferentialDriveControlPacket packet = {
     {
-        .id=ID_MOTOR_STATUS_PACKET,
-        .size=sizeof(MotorStatusPacket),
+        .id=DIFFERENTIAL_DRIVE_CONTROL_PACKET,
+        .size=sizeof(DifferentialDriveControlPacket),
         .seq=0,
         .dest_addr=0,
         .checksum=0,
     },
-    .desired_speed=100,
-    .encoder_ticks=0,
-    .measured_speed=50,
+    .translational_velocity=0,
+    .rotational_velocity=100,  
 };
 
 PacketHandler handler;

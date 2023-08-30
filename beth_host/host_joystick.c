@@ -35,12 +35,6 @@ DifferentialDriveControlPacket packet = {
     .rotational_velocity=0,
 };
 
-/**
- * ordine arrivo pacchetti statusRoutine: 
- * - status
- * - control 
- * - params
-*/
 
 PacketHandler handler;
 
@@ -58,7 +52,10 @@ void* statusRoutine(void* host){
             }
         }
         status=UnknownType;
-        BethComm_receiveFn(handler.current_packet,0);
+        //BethComm_receiveFn(handler.current_packet,0);
+        char buf[256];
+        printPacket(&packet.h,buf);
+        printf("%s\n",buf);
     }
 }
 
@@ -80,18 +77,14 @@ void* echoRoutine(void* host){
 void* readJoystickRoutine(void* _fd){
     int fd = *(int*)_fd;
     while(1){
-        sem_wait(&sem);
         int left = readJoystick(fd,GYROSCOPE_AXYSY_LEFT);
         int right = readJoystick(fd,GYROSCOPE_AXYSY_RIGHT);
         if(left != -1){
             packet.translational_velocity=abs(left%255);
-            flag_read = 1;
         }
         if(right != -1){
             packet.rotational_velocity=abs(right%255);
-            flag_read = 1;
         }
-        sem_post(&sem);
     }
 }
 
@@ -307,36 +300,33 @@ void mainRoutineNcourses(int fd_joy){
 }
 
 int main(void){
-    /*sem_init(&sem,0,1);
     BethHost_init(&host,"/dev/ttyACM0",19200);
     int fd_joy = openJoystick("/dev/input/js1");
     PacketHandler_init(&handler);
-    pthread_t thread_status_routine;
-    pthread_create(&thread_status_routine,NULL,statusRoutine,&host);
+    //pthread_t thread_status_routine;
+    //pthread_create(&thread_status_routine,NULL,statusRoutine,&host);
     pthread_t thread_read_joystick;
     pthread_create(&thread_read_joystick,NULL,readJoystickRoutine,&fd_joy);
 
     char buf[256];
     while(1){
-        if(flag_read == 1){
-            sem_wait(&sem);
-            BethHost_sendPacket(&host,&packet.h);
-            printf("Sent:\n");
-            printPacket(&packet.h,buf);
-            printf("%s\n",buf);
-            flag_read = 0;
-            sem_post(&sem);
-        }
-        usleep(U_SECOND);
-    }*/
+        BethHost_sendPacket(&host,&packet.h);
+        printf("Sent:\n");
+        printPacket(&packet.h,buf);
+        printf("%s\n",buf);
+        //sleep(1);
+    }
+    //GUI
 
-    BethHost_init(&host,"/dev/ttyACM0",19200);
+    /*BethHost_init(&host,"/dev/ttyACM0",19200);
     int fd_joy = openJoystick("/dev/input/js1");
     PacketHandler_init(&handler);
     pthread_t thread_status_routine;
     pthread_create(&thread_status_routine,NULL,statusRoutine,&host);
     
-    mainRoutineNcourses(fd_joy);
+    mainRoutineNcourses(fd_joy);*/
+
+
 
 
     return 0;
