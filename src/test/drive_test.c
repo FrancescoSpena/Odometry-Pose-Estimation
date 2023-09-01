@@ -14,6 +14,9 @@
 #include "../beth_firmware/beth_globals.h"
 #include "../common/beth_comm.h"
 
+#define BAUND1 19200
+#define BAUND2 115200
+
 #define PIN 13
 
 volatile uint8_t comm_flag=0;
@@ -21,18 +24,20 @@ volatile uint8_t comm_flag=0;
 PacketHandler handler;
 struct Uart* uart;
 
-void timerCommFn(){
-    comm_flag=1;
+void timerCommFn(void) {
+  comm_flag=1;
 }
 
 void statusRoutine(struct Uart* uart){
     PacketStatus status = UnknownType;
     uint8_t c;
+    BethComm_sendPacket(&system_status.h);
     if(Uart_available(uart)){
         while(status != ChecksumSuccess){
             c = Uart_read(uart);
             status = PacketHandler_readByte(&handler,c);
         }
+        system_status.rx_packets++;
         status = UnknownType;
     }
 }
@@ -45,21 +50,21 @@ void commFn(void){
 }
 
 int main(void){
-    uart = Uart_init(19200);
+    uart = Uart_init(BAUND2);
     PacketHandler_init(&handler);
     PacketHandler_addOperation(&handler,&diff_drive_control_op);
     BethJoints_init();
     BethDrive_init();
     Timer_init();
 
-
-    struct Timer* timer_comm=Timer_create(1000, &timerCommFn, 0);
+    struct Timer* timer_comm=Timer_create(10, (void*)&timerCommFn, 0);
 
     Timer_start(timer_comm);
 
     while(1){
-        if(comm_flag)
+        if(comm_flag){
             commFn();
+        }
     }
 
 }

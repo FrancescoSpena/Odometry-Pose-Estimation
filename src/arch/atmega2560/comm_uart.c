@@ -52,6 +52,17 @@ void setBaud19200(void){
   #undef BAUD
 }
 
+void setBaud115200(void){
+  #define BAUD 115200
+  #include <util/setbaud.h>
+  UBRR0H = UBRRH_VALUE;
+  UBRR0L = UBRRL_VALUE;
+
+  #ifdef USE_2X
+  UCSR0A |= (1<<U2X0);
+  #endif
+  #undef BAUD
+}
 
 /**
  * Initialize the Uart module
@@ -65,6 +76,10 @@ struct Uart* Uart_init(uint32_t baud) {
   }
   case 19200:{
     setBaud19200();
+    break;
+  }
+  case 115200:{
+    setBaud115200();
     break;
   }
   default:

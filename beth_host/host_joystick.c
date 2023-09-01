@@ -16,12 +16,15 @@
 #include <string.h>
 #include "packet_structure.h"
 #include "beth_comm_host.h"
-
 #define U_SECOND 500000
 
-int flag_read = 0;
+#define BAUND1 19200
+#define BAUND2 115200
 BethHost host;
 sem_t sem;
+
+volatile int flag_comm = 0;
+
 
 DifferentialDriveControlPacket packet = {
     {
@@ -80,11 +83,13 @@ void* readJoystickRoutine(void* _fd){
         int left = readJoystick(fd,GYROSCOPE_AXYSY_LEFT);
         int right = readJoystick(fd,GYROSCOPE_AXYSY_RIGHT);
         if(left != -1){
-            packet.translational_velocity=abs(left%255);
+            packet.translational_velocity=abs(left%255); 
         }
         if(right != -1){
             packet.rotational_velocity=abs(right%255);
         }
+        flag_comm = 1; 
+        usleep(10000);
     }
 }
 
@@ -300,22 +305,32 @@ void mainRoutineNcourses(int fd_joy){
 }
 
 int main(void){
-    BethHost_init(&host,"/dev/ttyACM0",19200);
+    BethHost_init(&host,"/dev/ttyACM0",BAUND2);
     int fd_joy = openJoystick("/dev/input/js1");
+
+    if(fd_joy < 0){
+        printf("joystick non disponibile\n");
+        return 0;
+    }
     PacketHandler_init(&handler);
-    //pthread_t thread_status_routine;
-    //pthread_create(&thread_status_routine,NULL,statusRoutine,&host);
+
+    pthread_t leggo;
+    pthread_create(&leggo,NULL,&statusRoutine,&host);
     pthread_t thread_read_joystick;
-    pthread_create(&thread_read_joystick,NULL,readJoystickRoutine,&fd_joy);
+    pthread_create(&thread_read_joystick,NULL,&readJoystickRoutine,&fd_joy);
 
     char buf[256];
     while(1){
-        BethHost_sendPacket(&host,&packet.h);
-        printf("Sent:\n");
-        printPacket(&packet.h,buf);
-        printf("%s\n",buf);
-        //sleep(1);
+        if(flag_comm){
+            BethHost_sendPacket(&host,&packet.h);
+            printf("Sent:\n");
+            printPacket(&packet.h,buf);
+            printf("%s\n",buf);
+            flag_comm = 0;   
+        }
     }
+
+
     //GUI
 
     /*BethHost_init(&host,"/dev/ttyACM0",19200);
