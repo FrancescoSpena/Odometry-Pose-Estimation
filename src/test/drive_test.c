@@ -31,7 +31,6 @@ void timerCommFn(void) {
 void statusRoutine(struct Uart* uart){
     PacketStatus status = UnknownType;
     uint8_t c;
-    BethComm_sendPacket(&system_status.h);
     if(Uart_available(uart)){
         while(status != ChecksumSuccess){
             c = Uart_read(uart);
@@ -53,8 +52,9 @@ int main(void){
     uart = Uart_init(BAUND2);
     PacketHandler_init(&handler);
     PacketHandler_addOperation(&handler,&diff_drive_control_op);
-    BethJoints_init();
-    BethDrive_init();
+    //BethJoints_init();
+    //BethDrive_init();
+    BethComm_init();
     Timer_init();
 
     struct Timer* timer_comm=Timer_create(10, (void*)&timerCommFn, 0);
@@ -62,6 +62,7 @@ int main(void){
     Timer_start(timer_comm);
 
     while(1){
+        BethComm_sendPacket(&system_status.h);
         if(comm_flag){
             commFn();
         }

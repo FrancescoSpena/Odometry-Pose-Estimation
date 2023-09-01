@@ -5,5 +5,6 @@
 #include "packet_handler.h"
 #include <stdint.h>
 
+void BethComm_init(void);
 void BethComm_receiveFn(PacketHeader* _h, void* _null);
 PacketStatus BethComm_sendPacket(PacketHeader* _h);

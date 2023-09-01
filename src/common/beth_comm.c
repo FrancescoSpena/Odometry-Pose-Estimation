@@ -9,6 +9,12 @@
 PacketHandler* handler;
 struct Uart* uart;
 
+void BethComm_init(void){
+    PacketHandler_init(handler);
+    uart = Uart_init(115200);
+    return;
+}
+
 typedef void (*ReceiveFn)(PacketHeader*h);
 
 typedef struct BethComm{
