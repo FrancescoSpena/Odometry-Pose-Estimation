@@ -12,9 +12,9 @@ typedef struct{
     MotorStatusPacket* status; 
     MotorParamsPacket* params;
 
-    uint8_t enc_idx;
-    uint8_t dir; 
-    uint8_t output;
+    int enc_idx;
+    int dir; 
+    int output;
 }BethJoint;
 
 void BethJoint_init(BethJoint*, MotorControlPacket*,

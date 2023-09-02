@@ -7,6 +7,9 @@
 #include "../common/beth_comm.h"
 
 PacketHeader* header;
+
+//----------------------Control--------------------
+
 MotorControlPacket motor1_control = {
     //header
     {
@@ -17,8 +20,23 @@ MotorControlPacket motor1_control = {
         .checksum=0,
     },
     .mode=Pid,
+    .speed=20,
+};
+
+MotorControlPacket motor2_control = {
+    //header
+    {
+        .id=ID_MOTOR_CONTROL_PACKET,
+        .size=sizeof(motor2_control),
+        .seq=0,
+        .dest_addr=0,
+        .checksum=0,
+    },
+    .mode=Direct,
     .speed=0
 };
+
+//----------------------Status--------------------
 
 MotorStatusPacket motor1_status = {
     //header
@@ -32,42 +50,6 @@ MotorStatusPacket motor1_status = {
     .encoder_ticks=0,
     .desired_speed=0,
     .measured_speed=0
-};
-
-MotorParamsPacket motor1_params = {
-    //header
-    {
-        .id=ID_MOTOR_PARAMS_PACKET,
-        .size=sizeof(motor1_params),
-        .seq=0,
-        .dest_addr=0,
-        .checksum=0,
-    },
-    .dir_a_pin=5, 
-    .dir_b_pin=6,
-    .pwm_pin=4,
-    //PID
-    .kp=5,
-    .ki=30,
-    .kd=0,
-
-    .max_i=255,
-    .max_out=255,
-    .dt=0.01,
-    .idt=100
-};
-
-MotorControlPacket motor2_control = {
-    //header
-    {
-        .id=ID_MOTOR_CONTROL_PACKET,
-        .size=sizeof(motor2_control),
-        .seq=0,
-        .dest_addr=0,
-        .checksum=0,
-    },
-    .mode=Pid,
-    .speed=20
 };
 
 MotorStatusPacket motor2_status = {
@@ -84,6 +66,31 @@ MotorStatusPacket motor2_status = {
     .measured_speed=0
 };
 
+//----------------------Params--------------------
+
+MotorParamsPacket motor1_params = {
+    //header
+    {
+        .id=ID_MOTOR_PARAMS_PACKET,
+        .size=sizeof(motor1_params),
+        .seq=0,
+        .dest_addr=0,
+        .checksum=0,
+    },
+    .dir_a_pin=5, 
+    .dir_b_pin=6,
+    .pwm_pin=4,
+    //PID
+    .kp=1,
+    .ki=0,
+    .kd=0.5,
+
+    .max_i=255,
+    .max_out=255,
+    .dt=0.01,
+    .idt=100
+};
+
 MotorParamsPacket motor2_params = {
     //header
     {
@@ -97,8 +104,8 @@ MotorParamsPacket motor2_params = {
     .dir_b_pin=8,
     .pwm_pin=9,
  
-    .kp=5,
-    .ki=30,
+    .kp=0.7,
+    .ki=0,
     .kd=0,
 
     .max_i=255,
