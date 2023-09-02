@@ -20,7 +20,7 @@ MotorControlPacket motor1_control = {
         .checksum=0,
     },
     .mode=Pid,
-    .speed=20,
+    .speed=60,
 };
 
 MotorControlPacket motor2_control = {
@@ -32,8 +32,8 @@ MotorControlPacket motor2_control = {
         .dest_addr=0,
         .checksum=0,
     },
-    .mode=Direct,
-    .speed=0
+    .mode=Pid,
+    .speed=-60,
 };
 
 //----------------------Status--------------------
@@ -81,9 +81,9 @@ MotorParamsPacket motor1_params = {
     .dir_b_pin=6,
     .pwm_pin=4,
     //PID
-    .kp=1,
-    .ki=0,
-    .kd=0.5,
+    .kp=11,
+    .ki=9,
+    .kd=0,
 
     .max_i=255,
     .max_out=255,
@@ -104,8 +104,8 @@ MotorParamsPacket motor2_params = {
     .dir_b_pin=8,
     .pwm_pin=9,
  
-    .kp=0.7,
-    .ki=0,
+    .kp=11,
+    .ki=6,
     .kd=0,
 
     .max_i=255,

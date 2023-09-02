@@ -36,14 +36,14 @@ typedef struct{
 typedef struct{
     PacketHeader h;
     uint8_t mode;
-    int speed;
+    int16_t speed;
 }MotorControlPacket;
 
 typedef struct{
     PacketHeader h;
-    int encoder_ticks;
-    int desired_speed;
-    int measured_speed;
+    int16_t encoder_ticks;
+    int16_t desired_speed;
+    int16_t measured_speed;
 }MotorStatusPacket;
 
 typedef struct{

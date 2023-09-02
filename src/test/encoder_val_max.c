@@ -2,13 +2,15 @@
 #include <stdint.h>
 #include <util/delay.h>
 #include <avr/io.h>
-#include "uart.h"
+#include "../arch/include/uart.h"
+#include "../arch/include/pins.h"
+#include "../arch/include/digio.h"
+#include "../arch/include/pwm.h"
+#include "../arch/include/encoder.h"
 
-#include "pwm.h"
-#include "pins.h"
-#include "digio.h"
-#include "encoder.h"
 
+//index 3 = 13,12 (pin)
+//index 2 = 11,10 (pin)
 
 int main(void){
     printf_init();
@@ -16,16 +18,9 @@ int main(void){
     Encoder_init();
     printf("Encoder init\n");
 
-    uint16_t curr = 0;
-    uint16_t max = 0;
     while(1){
         Encoder_sample();
-        printf("Encoder value = %u\n", Encoder_getValue(3));
-        curr = Encoder_getValue(3);
-        if(curr > max){
-            max = curr;
-        }
-        printf("Max value = %u\n",max);
+        printf("Encoder value = %u\n", Encoder_getValue(2));
         _delay_ms(500);
     }
 }

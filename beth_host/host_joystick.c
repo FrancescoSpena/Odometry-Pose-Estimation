@@ -66,8 +66,8 @@ void* readJoystickRoutine(void* _fd){
     int fd = *(int*)_fd;
     int v_x = 0;
     int v_y = 0;
-    float v_x_norm = 0.0;
-    float v_y_norm = 0.0;
+    //float v_x_norm = 0.0;
+    //float v_y_norm = 0.0;
     while(1){
         int left = readJoystick(fd,GYROSCOPE_AXYSX_LEFT,&v_x);
         int right = readJoystick(fd,GYROSCOPE_AXYSY_RIGHT,&v_y);
@@ -317,7 +317,7 @@ int main(void){
     //pthread_t thread_read_joystick;
     //pthread_create(&thread_read_joystick,NULL,&readJoystickRoutine,&fd_joy);
 
-    char buf[256];
+    //char buf[256];
     while(1){
         /*if(flag_comm){
             BethHost_sendPacket(&host,&packet.h);
