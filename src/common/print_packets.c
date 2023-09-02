@@ -19,7 +19,7 @@ uint16_t MotorControlPacket_print(PacketHeader* h, char* buf){
 uint16_t MotorStatusPacket_print(PacketHeader* h, char* buf){
     MotorStatusPacket* p = (MotorStatusPacket*)h; 
     uint16_t h_chars = printHeader(h,buf);
-    return sprintf(buf+h_chars,"[eticks: %d ds:%d ms:%d]", p->encoder_ticks, p->desired_speed,p->measured_speed);
+    return sprintf(buf+h_chars,"[eticks: %d desidered speed:%d measured speed:%d]", p->encoder_ticks, p->desired_speed,p->measured_speed);
 }
 
 uint16_t MotorParamsPacket_print(PacketHeader* h, char* buf){

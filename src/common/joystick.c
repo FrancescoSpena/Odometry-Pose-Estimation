@@ -22,7 +22,7 @@
 
 //internal function
 void makeNameButton(int _name_button);
-int _readJoystick(int _fd, int _axys, int _type);
+int _readJoystick(int _fd, int _axys, int _type, int*);
 
 struct js_event e;
 
@@ -40,17 +40,18 @@ int openJoystick(const char* _device){
 }
 
 //Return button value if success, else -1 
-int readJoystick(int _fd, int _name_button){
+int readJoystick(int _fd, int _name_button, int* value){
     makeNameButton(_name_button);
-    return _readJoystick(_fd,cb._axys,cb._type);
+    return _readJoystick(_fd,cb._axys,cb._type,value);
 }
 
 //Return value if success, else -1 
-int _readJoystick(int _fd, int _axys, int _type){
+int _readJoystick(int _fd, int _axys, int _type, int* value){
     int fd = _fd;
     while(read(fd,&e,sizeof(e)) > 0){
         if(e.number == _axys && e.type == _type){
-            return e.value;
+            *value = e.value;
+            return 0;
         }
         return -1;
     }

@@ -8,3 +8,4 @@
 void BethComm_init(void);
 void BethComm_receiveFn(PacketHeader* _h, void* _null);
 PacketStatus BethComm_sendPacket(PacketHeader* _h);
+PacketStatus BethComm_handle(void);

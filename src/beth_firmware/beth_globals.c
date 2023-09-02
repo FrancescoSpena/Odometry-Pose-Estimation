@@ -16,8 +16,8 @@ MotorControlPacket motor1_control = {
         .dest_addr=0,
         .checksum=0,
     },
-    .mode=Direct,
-    .speed=0 
+    .mode=Pid,
+    .speed=0
 };
 
 MotorStatusPacket motor1_status = {
@@ -66,8 +66,8 @@ MotorControlPacket motor2_control = {
         .dest_addr=0,
         .checksum=0,
     },
-    .mode=Direct,
-    .speed=0
+    .mode=Pid,
+    .speed=20
 };
 
 MotorStatusPacket motor2_status = {

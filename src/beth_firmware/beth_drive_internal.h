@@ -8,8 +8,8 @@
 
 typedef struct DiffDrive{
     DifferentialDriveStatusPacket* status;
-    const DifferentialDriveParamPacket* params;
-    const DifferentialDriveControlPacket* control;
+    DifferentialDriveParamPacket* params;
+    DifferentialDriveControlPacket* control;
 
     MotorStatusPacket* status_left, *status_right;
     MotorControlPacket* control_left, *control_right;

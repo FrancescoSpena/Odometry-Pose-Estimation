@@ -2,14 +2,11 @@
 #include <stdint.h>
 #include <util/delay.h>
 #include <avr/io.h>
-#include "uart.h"
 
-#include "pwm.h"
-#include "pins.h"
-#include "digio.h"
-#include "encoder.h"
-#include "beth_joint.h"
-#include "beth_drive.h"
+#include "../beth_firmware/beth_drive.h"
+#include "../beth_firmware/beth_joint.h"
+#include "../common/beth_comm.h"
+#include "../arch/include/timer.h"
 
 
 /**
@@ -18,18 +15,27 @@
  * Motor2 --> dir_a=7, dir_b=8, pwm=9
 */
 
+volatile uint8_t comm_flag=0;
+
+void timerCommFn(void) {
+  comm_flag=1;
+}
+
+void commFn(void){
+    BethComm_sendPacket(&motor1_status.h);
+    comm_flag = 0;
+}
+
 int main(void){
-    printf_init();
+    BethComm_init();
     BethJoints_init();
 
-    BethDrive_init();
-
-    BethDrive_handle();
+    struct Timer* timer_comm=Timer_create(1000, (void*)&timerCommFn, 0);
+    Timer_start(timer_comm);
 
     while(1){
-        //Encoder_sample();
+        if(comm_flag)
+            commFn();
         BethJoints_handle();
-        //printf("Encoder 1 = %d\t Encoder 2 = %d\n", Encoder_getValue(3),Encoder_getValue(2));
-        
     }
 }

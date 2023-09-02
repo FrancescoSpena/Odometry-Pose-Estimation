@@ -4,14 +4,15 @@
 #include <string.h>
 #include <util/delay.h>
 #include <stdio.h>
-#include "../arch/include/comm_uart.h"
+#include "../beth_firmware/beth_globals.h"
 
-PacketHandler* handler;
+PacketHandler handler;
 struct Uart* uart;
 
 void BethComm_init(void){
-    PacketHandler_init(handler);
-    uart = Uart_init(115200);
+    PacketHandler_init(&handler);
+    PacketHandler_addOperation(&handler,&diff_drive_control_op);
+    uart = Uart_init(19200);
     return;
 }
 
@@ -171,12 +172,22 @@ PacketStatus BethComm_sendPacket_internal(PacketHandler* handler, PacketHeader* 
 }
 
 PacketStatus BethComm_sendPacket(PacketHeader* _h){
-    return BethComm_sendPacket_internal(handler,_h,uart);
+    return BethComm_sendPacket_internal(&handler,_h,uart);
 }
 
 void BethComm_receiveFn(PacketHeader* _h, void* _null){
     ReceiveFn fn = received_packet_ops[_h->id].receive_fn;
     (*fn)(_h);
-    //BethComm_sendPacket(_h);
     return;
+}
+
+PacketStatus BethComm_handle(void){
+    while(Uart_available(uart)){
+        uint8_t c = Uart_read(uart);
+        if(PacketHandler_readByte(&handler,c) < 0){
+            system_status.rx_errors++;
+        }
+        system_status.rx_packets++;
+    }
+    return Success;
 }
