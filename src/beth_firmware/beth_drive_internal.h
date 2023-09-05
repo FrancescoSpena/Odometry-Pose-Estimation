@@ -26,7 +26,4 @@ void DifferentialDriveController_init(DifferentialDriveController* ctr,
 // computes the control from the desired velocities in ctr->control,
 // flushes them to the left and right joints ctr->control_left and ctr->control_right
 void DifferentialDriveController_control(DifferentialDriveController* ctr);
-// resets the platform controller to x,y,theta, and the velocities to 0
-void DifferentialDriveController_reset(DifferentialDriveController* ctr,
-                                        float x, float y, float theta);
                         

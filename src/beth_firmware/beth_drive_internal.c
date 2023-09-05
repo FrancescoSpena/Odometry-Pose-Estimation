@@ -20,13 +20,15 @@ void DifferentialDriveController_init(DifferentialDriveController* ctr,
     ctr->control_left=motor_left->control;
     ctr->status_right=motor_right->status;
     ctr->control_right=motor_right->control;
-    DifferentialDriveController_reset(ctr,0.,0.,0.);
+    return;
 }
 
 void DifferentialDriveController_control(DifferentialDriveController* ctr){
     float tv_des=ctr->control->translational_velocity; //trans speed
     float rv_des=ctr->control->rotational_velocity;    //rotational speed
 
+    ctr->status->rotational_velocity_desired=rv_des;
+    ctr->status->translational_velocity_desired=tv_des;
     
     /**
      * Compute this:
@@ -48,15 +50,4 @@ void DifferentialDriveController_control(DifferentialDriveController* ctr){
     ctr->control_right->speed=total_right;
     ctr->control_left->speed=total_left;
     return;
-}
-
-void DifferentialDriveController_reset(DifferentialDriveController* ctr,
-                                        float x, float y, float theta){
-    ctr->status->odom_x=x;
-    ctr->status->odom_y=y;
-    ctr->status->odom_theta=theta;
-    ctr->status->translational_velocity_measured=0.;
-    ctr->status->rotational_velocity_measured=0;
-    ctr->status->translational_velocity_desired=0.;
-    ctr->status->rotational_velocity_desired=0.;
 }

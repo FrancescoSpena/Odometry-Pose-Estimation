@@ -113,9 +113,7 @@ void DifferentialDriveStatusPacket_receiveFn(PacketHeader* h){
     drive_status.odom_x=p->odom_x;
     drive_status.odom_y=p->odom_y;
     drive_status.rotational_velocity_desired=p->rotational_velocity_desired;
-    drive_status.rotational_velocity_measured=p->rotational_velocity_measured;
     drive_status.translational_velocity_desired=p->translational_velocity_desired;
-    drive_status.translational_velocity_measured=p->translational_velocity_measured;
     return;
 }
 

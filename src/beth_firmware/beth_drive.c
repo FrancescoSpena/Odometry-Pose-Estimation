@@ -7,7 +7,7 @@
 #include "beth_drive_internal.h"
 #include "beth_joint.h"
 
-static DifferentialDriveController drive_controller;
+DifferentialDriveController drive_controller;
 
 void BethDrive_init(void){
     DifferentialDriveController_init(&drive_controller,
