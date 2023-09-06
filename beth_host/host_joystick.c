@@ -62,6 +62,24 @@ void* statusRoutine(void* host){
     }
 }
 
+void* statusRoutine_GUI(void* host){
+    BethHost* hos = (BethHost*)host;
+    int fd = hos->serial_fd;
+    uint8_t c;
+    PacketStatus status = UnknownType;
+    int n;
+    while(1){
+        while(status != ChecksumSuccess){
+            n = read(fd,&c,1);
+            if(n){
+                status = PacketHandler_readByte(&handler,c);
+            }
+        }
+        status=UnknownType;
+        BethComm_receiveFn(handler.current_packet,0);
+    }
+}
+
 void* commFn(void* f){
     while(1){
         flag_comm = 1;
@@ -178,11 +196,12 @@ void mainRoutineNcourses(int fd_joy){
             mvwscanw(win,5,10,"%d",&speed);
             mvwprintw(win,5,10,"%d",speed);
             drive_control.rotational_velocity=speed;
+            mvwprintw(win,6,1,"Send information to platform...load data");
             wrefresh(win);
             //Send packet with information
             wclear(win);
             int i = 0;
-            while(i != 8){
+            while(i != 5){
                 BethHost_sendPacket(&host,&drive_control.h);
                 i++;
                 usleep(U_SECOND);
@@ -192,18 +211,18 @@ void mainRoutineNcourses(int fd_joy){
             WINDOW* win_status;
             //status box
             int height_status,widht_status,start_y_status,start_x_status;
-            height_status = 15;
+            height_status = 7;
             widht_status = 32;
-            start_y_status = 2;
+            start_y_status = 7;
             start_x_status = 5;
             win_status = newwin(height_status,widht_status,start_y_status,start_x_status);
             box(win_status,0,0);
             wprintw(win_status,"Status Box");
             //info print packet
-            mvwprintw(win_status,10,1,"Odometry x,y,theta:");
-            mvwprintw(win_status,11,1,"%f",drive_status.odom_x);
-            mvwprintw(win_status,12,1,"%f",drive_status.odom_y);
-            mvwprintw(win_status,13,1,"%f",drive_status.odom_theta);
+            mvwprintw(win_status,2,1,"Odometry x,y,theta:");
+            mvwprintw(win_status,3,1,"%f",drive_status.odom_x);
+            mvwprintw(win_status,4,1,"%f",drive_status.odom_y);
+            mvwprintw(win_status,5,1,"%f",drive_status.odom_theta);
 
             
             //refresh
@@ -245,7 +264,6 @@ void mainRoutineNcourses(int fd_joy){
             //refresh
             wrefresh(win);
             wrefresh(win_params);
-            
             break;
         case '3':
             mvwprintw(win,0,32,"One motor mode");
@@ -290,9 +308,6 @@ void mainRoutineNcourses(int fd_joy){
             break;
     }
 
-
-    //code
-    
     //ncurses end
     getch();
     wclear(win);
@@ -301,7 +316,7 @@ void mainRoutineNcourses(int fd_joy){
 }
 
 int main(void){
-    /*BethHost_init(&host,"/dev/ttyACM0",BAUND1);
+    BethHost_init(&host,"/dev/ttyACM0",BAUND1);
     int fd_joy = openJoystick("/dev/input/js1");
 
     if(fd_joy < 0){
@@ -315,7 +330,7 @@ int main(void){
     pthread_t thread_read_joystick;
     pthread_create(&thread_read_joystick,NULL,&readJoystickRoutine,&fd_joy);
 
-    //char buf[256];
+    char buf[256];
     while(1){
         if(flag_comm){
             BethHost_sendPacket(&host,&packet.h);
@@ -324,12 +339,12 @@ int main(void){
             printf("%s\n",buf);
             flag_comm = 0;   
         }
-    }*/
+    }
 
 
     //GUI
 
-    BethHost_init(&host,"/dev/ttyACM0",19200);
+    /*BethHost_init(&host,"/dev/ttyACM0",19200);
     int fd_joy = openJoystick("/dev/input/js1");
     if(fd_joy < 0){
         printf("joystick non disponibile, collegare un dispositivo funzionante\n");
@@ -338,11 +353,11 @@ int main(void){
     PacketHandler_init(&handler);
 
     pthread_t leggo;
-    pthread_create(&leggo,NULL,&statusRoutine,&host);
+    pthread_create(&leggo,NULL,&statusRoutine_GUI,&host);
     pthread_t thread_read_joystick;
     pthread_create(&thread_read_joystick,NULL,&readJoystickRoutine,&fd_joy);
     
-    mainRoutineNcourses(fd_joy);
+    mainRoutineNcourses(fd_joy);*/
 
 
     return 0;

@@ -39,18 +39,18 @@ MotorParamsPacket motor1_params = {
         .dest_addr=0,
         .checksum=0,
     },
-    .dir_a_pin=5, 
-    .dir_b_pin=6,
-    .pwm_pin=4,
+    .dir_a_pin=0, 
+    .dir_b_pin=0,
+    .pwm_pin=0,
     //PID
-    .kp=5,
-    .ki=30,
+    .kp=0,
+    .ki=0,
     .kd=0,
 
-    .max_i=255,
-    .max_out=255,
-    .dt=0.01,
-    .idt=100
+    .max_i=0,
+    .max_out=0,
+    .dt=0,
+    .idt=0
 };
 
 MotorControlPacket motor2_control = {
@@ -89,18 +89,18 @@ MotorParamsPacket motor2_params = {
         .dest_addr=0,
         .checksum=0,
     },
-    .dir_a_pin=7, 
-    .dir_b_pin=8,
-    .pwm_pin=9,
+    .dir_a_pin=0, 
+    .dir_b_pin=0,
+    .pwm_pin=0,
  
-    .kp=5,
-    .ki=30,
+    .kp=0,
+    .ki=0,
     .kd=0,
 
-    .max_i=255,
-    .max_out=255,
-    .dt=0.01,
-    .idt=100
+    .max_i=0,
+    .max_out=0,
+    .dt=0,
+    .idt=0
 };
 
 SystemStatusPacket system_status = {
@@ -126,8 +126,8 @@ DifferentialDriveParamPacket drive_params = {
         .checksum=0,
     },
     //change this value (in cm)
-    .distance=20,
-    .radius_wheel=2
+    .distance=0,
+    .radius_wheel=0
 };
 
 //dest_addr = 0 --> motor 1 
