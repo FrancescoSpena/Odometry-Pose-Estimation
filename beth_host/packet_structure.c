@@ -155,10 +155,6 @@ DifferentialDriveStatusPacket drive_status = {
     .odom_x=0,
     .odom_y=0,
     .odom_theta=0,
-    .rotational_velocity_desired=0,
-    .translational_velocity_desired=0,
-    .rotational_velocity_measured=0,
-    .translational_velocity_measured=0
 };
 
 //Operations

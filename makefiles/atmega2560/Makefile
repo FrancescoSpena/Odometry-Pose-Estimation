@@ -1,4 +1,4 @@
-BINS=../../src/test/joint_test.elf
+BINS=../../src/test/drive_test_base.elf
 
 #atmega2560
 OBJS = ../../src/arch/atmega2560/comm_uart.o ../../src/arch/atmega2560/digio.o ../../src/arch/atmega2560/encoder.o

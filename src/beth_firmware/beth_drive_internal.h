@@ -6,24 +6,7 @@
 #include "beth_joint_internal.h"
 #include "../common/beth_packets.h"
 
-typedef struct DiffDrive{
-    DifferentialDriveStatusPacket* status;
-    DifferentialDriveParamPacket* params;
-    DifferentialDriveControlPacket* control;
-
-    MotorStatusPacket* status_left, *status_right;
-    MotorControlPacket* control_left, *control_right;
-}DifferentialDriveController;
-
-// initializes ctr by filling fields and computing cached quantities
-void DifferentialDriveController_init(DifferentialDriveController* ctr,
-                                      DifferentialDriveParamPacket* params,
-                                      DifferentialDriveControlPacket* control,
-                                      DifferentialDriveStatusPacket* status,
-                                      BethJoint* motor_left,
-                                      BethJoint* motor_right
-                                      );
 // computes the control from the desired velocities in ctr->control,
 // flushes them to the left and right joints ctr->control_left and ctr->control_right
-void DifferentialDriveController_control(DifferentialDriveController* ctr);
+void DifferentialDriveController_control(void);
                         

@@ -49,13 +49,10 @@ uint16_t SystemStatusPacket_print(PacketHeader* h, char* buf){
 uint16_t DifferentialDriveStatusPacket_print(PacketHeader* h, char* buf){
     DifferentialDriveStatusPacket* p = (DifferentialDriveStatusPacket*)h;
     uint16_t h_chars = printHeader(h,buf);
-    return sprintf(buf+h_chars,"[odom_x:%f odom_y:%f odom_theta:%f tran_desidered_vel:%f rotat_measured_vel:%f enabled:%d]",
+    return sprintf(buf+h_chars,"[odom_x:%f odom_y:%f odom_theta:%f]",
                 p->odom_x,
                 p->odom_y,
-                p->odom_theta,
-                p->rotational_velocity_desired,
-                p->rotational_velocity_desired,
-                p->enabled);
+                p->odom_theta);
 }
 
 uint16_t DifferentialDriveParamPacket_print(PacketHeader* h, char* buf){
@@ -90,13 +87,13 @@ static PrintPacketOps print_packet_ops[MAX_PACKET_TYPE] = {
     { // 3 
         .print_fn = SystemStatusPacket_print,
     },
-    { //4 differential status 
+    { //4 
         .print_fn = DifferentialDriveStatusPacket_print,
     },
-    { //5 differential params
+    { //5 
         .print_fn = DifferentialDriveParamPacket_print,
     },
-    { //6 differential control
+    { //6 
         .print_fn = DifferentialDriveControlPacket_print,
     }
 };

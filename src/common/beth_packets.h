@@ -75,16 +75,11 @@ typedef struct{
 typedef struct{
     PacketHeader h;
     float odom_x, odom_y, odom_theta; //odometry encoder
-    
-    float translational_velocity_desired;
-    float rotational_velocity_desired;
-    
-    uint8_t enabled;
 }DifferentialDriveStatusPacket;
 
 typedef struct{
     PacketHeader h;
-    float radius_wheel;
+    float radius_wheel; //radius wheel 
     float distance; //distance wheel
 }DifferentialDriveParamPacket;
 

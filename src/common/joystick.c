@@ -39,7 +39,7 @@ int openJoystick(const char* _device){
     return open(_device,O_RDONLY);
 }
 
-//Return button value if success, else -1 
+//Return 0 if success and write value variable, else -1 
 int readJoystick(int _fd, int _name_button, int* value){
     makeNameButton(_name_button);
     return _readJoystick(_fd,cb._axys,cb._type,value);

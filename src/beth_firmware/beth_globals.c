@@ -20,7 +20,7 @@ MotorControlPacket motor1_control = {
         .checksum=0,
     },
     .mode=Pid,
-    .speed=60,
+    .speed=0,
 };
 
 MotorControlPacket motor2_control = {
@@ -33,7 +33,7 @@ MotorControlPacket motor2_control = {
         .checksum=0,
     },
     .mode=Pid,
-    .speed=-60,
+    .speed=0,
 };
 
 //----------------------Status--------------------
@@ -143,6 +143,7 @@ DifferentialDriveParamPacket drive_params = {
 
 //dest_addr = 0 --> motor 1 
 //dest_addr = 1 --> motor 2 
+//rotational positive is right direction
 DifferentialDriveControlPacket drive_control = {
     {
         .id=DIFFERENTIAL_DRIVE_CONTROL_PACKET,
@@ -152,7 +153,7 @@ DifferentialDriveControlPacket drive_control = {
         .checksum=0,
     },
     .rotational_velocity=0,
-    .translational_velocity=0
+    .translational_velocity=0,
 };
 
 DifferentialDriveStatusPacket drive_status = {
@@ -163,11 +164,9 @@ DifferentialDriveStatusPacket drive_status = {
         .dest_addr=0,
         .checksum=0,
     },
-    .odom_x=5,
-    .odom_y=10,
-    .odom_theta=7,
-    .rotational_velocity_desired=0,
-    .translational_velocity_desired=0,
+    .odom_x=0,
+    .odom_y=0,
+    .odom_theta=0,
 };
 
 //Operations
