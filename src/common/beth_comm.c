@@ -107,13 +107,10 @@ void SystemStatusPacket_receiveFn(PacketHeader* h){
 
 void DifferentialDriveStatusPacket_receiveFn(PacketHeader* h){
     DifferentialDriveStatusPacket* p = (DifferentialDriveStatusPacket*)h;
-    drive_status.enabled=p->enabled;
     drive_status.h=p->h;
     drive_status.odom_theta=p->odom_theta;
     drive_status.odom_x=p->odom_x;
     drive_status.odom_y=p->odom_y;
-    drive_status.rotational_velocity_desired=p->rotational_velocity_desired;
-    drive_status.translational_velocity_desired=p->translational_velocity_desired;
     return;
 }
 

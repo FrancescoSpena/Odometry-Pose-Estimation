@@ -22,7 +22,8 @@ void timerCommFn(void) {
 
 void commFn(void){
     BethComm_handle();
-    BethComm_sendPacket(&drive_control.h);
+    //BethComm_sendPacket(&drive_params.h);
+    //BethComm_sendPacket(&drive_control.h);
     comm_flag = 0;
 }
 
@@ -33,9 +34,7 @@ int main(void){
     Timer_init();
 
     struct Timer* timer_comm=Timer_create(10, (void*)&timerCommFn, 0);
-
     Timer_start(timer_comm);
-
 
     while(1){
         if(comm_flag)
