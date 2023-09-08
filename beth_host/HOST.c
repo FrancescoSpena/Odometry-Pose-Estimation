@@ -23,6 +23,9 @@
 volatile int flag_comm = 0;
 volatile int flag_info = 0;
 
+BethHost host;
+PacketHandler handler;
+
 DifferentialDriveControlPacket packet = {
     {
         .id=DIFFERENTIAL_DRIVE_CONTROL_PACKET,
@@ -34,9 +37,6 @@ DifferentialDriveControlPacket packet = {
     .translational_velocity=0,
     .rotational_velocity=0,
 };
-
-BethHost host;
-PacketHandler handler;
 
 void* statusRoutine(void* host){
     BethHost* hos = (BethHost*)host;
@@ -71,17 +71,14 @@ void* readJoystickRoutine(void* _fd){
         int right = readJoystick(fd,GYROSCOPE_AXYSY_RIGHT,&v_y);
         int center = readJoystick(fd,BUTTON_X,&v_c);
         if(left == 0){
-            //printf("letto sx\n");
             v_x_norm = -((float)v_x) / 32767;
             packet.translational_velocity=v_x_norm*80; 
         }
         if(right == 0){
-            //printf("letto dx\n");
             v_y_norm = ((float)v_y) / 32767;
             packet.rotational_velocity=v_y_norm*2; 
         }
         if(center == 0){
-            //printf("letto X\n");
             packet.translational_velocity = 0;
             packet.rotational_velocity = 0;
         }
@@ -89,8 +86,6 @@ void* readJoystickRoutine(void* _fd){
         usleep(10000);
     }
 }
-
-
 
 void printInfo(void){
     printf("------------------------------------------\n");
@@ -122,8 +117,8 @@ int main(void){
         return 0;
     }
     
-    //pthread_t leggo;
-    //pthread_create(&leggo,NULL,&statusRoutine,&host);
+    pthread_t leggo;
+    pthread_create(&leggo,NULL,&statusRoutine,&host);
     pthread_t thread_read_joystick;
     pthread_create(&thread_read_joystick,NULL,&readJoystickRoutine,&fd_joy);
 
@@ -131,11 +126,7 @@ int main(void){
     while(1){
         if(flag_comm){
             BethHost_sendPacket(&host,&packet.h);
-            //printPacketSend(&packet.h);
-            /*if(flag_info){
-                printInfo();
-                flag_info = 0;
-            } */
+            printPacketSend(&packet.h);
             flag_comm = 0;  
         }
     }

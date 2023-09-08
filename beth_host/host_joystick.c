@@ -34,7 +34,7 @@ DifferentialDriveControlPacket packet = {
         .dest_addr=0,
         .checksum=0,
     },
-    .translational_velocity=0,
+    .translational_velocity=5,
     .rotational_velocity=0,
 };
 
