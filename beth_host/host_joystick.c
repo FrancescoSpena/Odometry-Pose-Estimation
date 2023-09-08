@@ -55,10 +55,8 @@ void* statusRoutine(void* host){
             }
         }
         status=UnknownType;
-        char buf[256];
-        printPacket(handler.current_packet,buf);
-        printf("Ricevuto:\n");
-        printf("%s\n",buf);
+        BethComm_receiveFn(handler.current_packet,0);
+        usleep(10000);
     }
 }
 
@@ -315,6 +313,18 @@ void mainRoutineNcourses(int fd_joy){
     return;
 }
 
+void printInfo(void){
+    printf("Control Information:\n");
+    printf("Linear Speed:%d\t Rotational Speed:%d\n",
+                (int)drive_control.translational_velocity,(int)drive_control.rotational_velocity);
+    printf("Status Information:\n");
+    printf("Odometry X:%f\t Odometry Y:%f\t Odometry Z:%f\n",
+                drive_status.odom_x,drive_status.odom_y,drive_status.odom_theta);
+    printf("Params Information:\n");
+    printf("Distance:%f\t Radius:%f\n",
+                drive_params.distance,drive_params.radius_wheel);
+}
+
 int main(void){
     BethHost_init(&host,"/dev/ttyACM0",BAUND1);
     int fd_joy = openJoystick("/dev/input/js1");
@@ -330,13 +340,10 @@ int main(void){
     pthread_t thread_read_joystick;
     pthread_create(&thread_read_joystick,NULL,&readJoystickRoutine,&fd_joy);
 
-    char buf[256];
     while(1){
         if(flag_comm){
             BethHost_sendPacket(&host,&packet.h);
-            printf("Sent:\n");
-            printPacket(&packet.h,buf);
-            printf("%s\n",buf);
+            printInfo();
             flag_comm = 0;   
         }
     }

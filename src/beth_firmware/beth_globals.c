@@ -138,7 +138,7 @@ DifferentialDriveParamPacket drive_params = {
     },
     //change this value (in cm)
     .distance=42,
-    .radius_wheel=2.75
+    .radius_wheel=3
 };
 
 //dest_addr = 0 --> motor 1 

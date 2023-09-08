@@ -28,7 +28,7 @@ void DifferentialDriveController_control(void){
     float total_left = first_term - second_term;   // v/r - d*omega / 2*r  2 - 25 = -23 
     
     //Write to the single motor 
-    motor1_control.speed=total_right;
-    motor2_control.speed=total_left;
+    motor1_control.speed=total_left;
+    motor2_control.speed=total_right;
     return;
 }
