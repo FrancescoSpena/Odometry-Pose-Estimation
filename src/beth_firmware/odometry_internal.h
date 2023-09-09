@@ -8,7 +8,7 @@ typedef struct Odometry{
     float x_k;
     float y_k;
     float theta_k;
-    int T_s;
+    float T_s;
     float v_k;
     float omega_k;
     float delta_s;
@@ -16,6 +16,6 @@ typedef struct Odometry{
 }Odometry;
 
 //Inizialize the structure
-void OdometryInit_int(Odometry* o);
+void OdometryInit_int(Odometry* o, float Ts);
 //Update status' variable for odometry
 void OdometryHandle_int(Odometry* o);

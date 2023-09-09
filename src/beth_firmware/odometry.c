@@ -4,14 +4,12 @@ Odometry odom;
 
 
 //Init Odometry
-void Odometry_init(void){
-    OdometryInit_int(&odom);
-    return;
+void Odometry_init(int Ts){
+    return OdometryInit_int(&odom,Ts);
 }
 
 
 //Side Effect to status packet
 void Odometry_handle(void){
-    OdometryHandle_int(&odom);
-    return;
+    return OdometryHandle_int(&odom);
 }

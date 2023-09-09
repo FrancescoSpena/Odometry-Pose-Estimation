@@ -30,7 +30,7 @@ void BethJoint_init(BethJoint* j, MotorControlPacket* _control,
     digio_setPin(j->params->dir_a_pin,0);
     digio_configurePin(j->params->dir_b_pin,Output);
     digio_setPin(j->params->dir_b_pin,0);
-    Odometry_init();
+    Odometry_init(0.01);
     return;
 }
 

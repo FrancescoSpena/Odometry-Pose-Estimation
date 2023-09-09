@@ -3,9 +3,10 @@
 #include "math.h"
 #include "../arch/include/encoder.h"
 
-void OdometryInit_int(Odometry* o){
+void OdometryInit_int(Odometry* o, float Ts){
     o->omega_k = 0.f;
-    o->T_s = 0;
+    if(Ts != 0.f) o->T_s = Ts;
+    else o->T_s = 1;
     o->theta_k = 0.f;
     o->v_k = 0.f;
     o->x_k = 0.f;
@@ -32,7 +33,7 @@ void OdometryPredict(Odometry* o){
 }
 
 void OdometryHandle_int(Odometry* o){
-    int T_s = o->T_s;
+    float T_s = o->T_s;
     float omega_k = o->omega_k;
     float v_k = o->v_k;
 
