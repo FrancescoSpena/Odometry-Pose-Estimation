@@ -7,7 +7,7 @@
 #include "../arch/include/pwm.h"
 #include "../arch/include/encoder.h"
 #include "../arch/include/uart.h"
-#include <stdio.h>
+#include "odometry.h"
 
 
 void BethJoint_init(BethJoint* j, MotorControlPacket* _control,
@@ -30,9 +30,7 @@ void BethJoint_init(BethJoint* j, MotorControlPacket* _control,
     digio_setPin(j->params->dir_a_pin,0);
     digio_configurePin(j->params->dir_b_pin,Output);
     digio_setPin(j->params->dir_b_pin,0);
-
-    printf_init();
-
+    Odometry_init();
     return;
 }
 
@@ -51,6 +49,9 @@ void BethJoint_handle(BethJoint* j) {
     j->status->encoder_ticks=Encoder_getValue(enc_idx);
     j->status->measured_speed=j->status->encoder_ticks-prev_ticks;
     
+    //Odometry
+    Odometry_handle();
+
     if(j->control->mode==Disable)
         return;
     if(j->control->mode==Pid) {

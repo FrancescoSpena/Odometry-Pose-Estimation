@@ -10,9 +10,10 @@ OBJS += ../../src/common/print_packets.o
 #firware 
 OBJS += ../../src/beth_firmware/beth_drive_internal.o ../../src/beth_firmware/beth_drive.o 
 OBJS += ../../src/beth_firmware/beth_globals.o ../../src/beth_firmware/beth_joint_internal.o
-OBJS += ../../src/beth_firmware/beth_joint.o
+OBJS += ../../src/beth_firmware/beth_joint.o ../../src/beth_firmware/odometry_internal.o
+OBJS += ../../src/beth_firmware/odometry.o
 
-#atmege2560
+#atmega2560
 HEADERS = ../../src/arch/include/comm_uart.h ../../src/arch/include/digio.h ../../src/arch/include/encoder.h
 HEADERS += ../../src/arch/include/pins.h ../../src/arch/include/pwm.h ../../src/arch/include/timer.h
 HEADERS += ../../src/arch/include/uart.h
@@ -23,7 +24,8 @@ HEADERS += ../../src/common/packet_status.h ../../src/common/print_packets.h
 #firmware
 HEADERS += ../../src/beth_firmware/beth_drive_internal.h ../../src/beth_firmware/beth_drive.h
 HEADERS += ../../src/beth_firmware/beth_globals.h ../../src/beth_firmware/beth_joint_internal.h
-HEADERS += ../../src/beth_firmware/beth_joint.h
+HEADERS += ../../src/beth_firmware/beth_joint.h ../../src/beth_firmware/odometry_internal.h 
+HEADERS += ../../src/beth_firmware/odometry.h 
 
 include avr.mk
 
