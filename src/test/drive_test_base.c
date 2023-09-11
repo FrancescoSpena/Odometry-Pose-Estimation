@@ -25,9 +25,9 @@ void timerCommFn(void) {
 
 void commFn(void){
     BethComm_handle();
-    BethComm_sendPacket(&drive_control.h);
+    //BethComm_sendPacket(&drive_control.h);
     BethComm_sendPacket(&drive_status.h);
-    BethComm_sendPacket(&drive_params.h);
+    //BethComm_sendPacket(&drive_params.h);
     comm_flag = 0;
 }
 #endif

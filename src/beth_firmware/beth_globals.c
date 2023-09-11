@@ -82,7 +82,7 @@ MotorParamsPacket motor1_params = {
     .pwm_pin=4,
     //PID
     .kp=11,
-    .ki=9,
+    .ki=6,
     .kd=0,
 
     .max_i=255,
@@ -138,7 +138,7 @@ DifferentialDriveParamPacket drive_params = {
     },
     //change this value (in cm)
     .distance=42,
-    .radius_wheel=3
+    .radius_wheel=14
 };
 
 //dest_addr = 0 --> motor 1 

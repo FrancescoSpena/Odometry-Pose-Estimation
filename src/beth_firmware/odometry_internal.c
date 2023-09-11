@@ -41,7 +41,7 @@ void OdometryHandle_int(Odometry* o){
     double cos_k = cos((double)o->theta_k);
     double sin_k = sin((double)o->theta_k);
 
-    drive_status.odom_theta = (o->theta_k + (omega_k*T_s));
+    drive_status.odom_theta = o->theta_k + (omega_k*T_s);
     
     //cos(k+1) sin(k+1)
     double cos_k1 = cos((double)drive_status.odom_theta);

@@ -52,7 +52,10 @@ void* statusRoutine(void* host){
             }
         }
         status=UnknownType;
-        BethComm_receiveFn(handler.current_packet,0);
+        //BethComm_receiveFn(handler.current_packet,0);
+        char buf[256];
+        printPacket(handler.current_packet,buf);
+        printf("Received:\n %s\n",buf);
         flag_info = 1;
         usleep(10000);
     }
@@ -72,11 +75,11 @@ void* readJoystickRoutine(void* _fd){
         int center = readJoystick(fd,BUTTON_X,&v_c);
         if(left == 0){
             v_x_norm = -((float)v_x) / 32767;
-            packet.translational_velocity=v_x_norm*80; 
+            packet.translational_velocity=v_x_norm*150; 
         }
         if(right == 0){
             v_y_norm = ((float)v_y) / 32767;
-            packet.rotational_velocity=v_y_norm*2; 
+            packet.rotational_velocity=v_y_norm*4; 
         }
         if(center == 0){
             packet.translational_velocity = 0;
