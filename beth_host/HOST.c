@@ -56,6 +56,21 @@ void* statusRoutine(void* host){
         char buf[256];
         printPacket(handler.current_packet,buf);
         printf("Received:\n %s\n",buf);
+        
+        /*FILE* file;
+        file = fopen("data.txt","a");
+        DifferentialDriveStatusPacket* status = (DifferentialDriveStatusPacket*)handler.current_packet;
+        if(status->odom_x == status->odom_x && status->odom_y == status->odom_y){
+            float x = status->odom_x;
+            float y = status->odom_y;
+
+            fprintf(file,"%f %f\n",x,y);
+
+        }
+
+        fclose(file);*/
+        
+
         flag_info = 1;
         usleep(10000);
     }
@@ -129,7 +144,7 @@ int main(void){
     while(1){
         if(flag_comm){
             BethHost_sendPacket(&host,&packet.h);
-            printPacketSend(&packet.h);
+            //printPacketSend(&packet.h);
             flag_comm = 0;  
         }
     }

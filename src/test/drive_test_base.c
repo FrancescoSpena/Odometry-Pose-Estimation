@@ -13,6 +13,7 @@
 #include "../common/packet_handler.h"
 #include "../beth_firmware/beth_globals.h"
 #include "../common/beth_comm.h"
+#include "../beth_firmware/odometry.h"
 
 #define COMMON
 
@@ -34,6 +35,7 @@ void commFn(void){
 
 
 int main(void){
+    Odometry_init(0.01);
     BethJoints_init();
     BethComm_init();
     #ifdef COMMON
@@ -47,8 +49,8 @@ int main(void){
         #ifdef COMMON
         if(comm_flag)
             commFn();
+            BethDrive_handle();
         #endif
-        BethDrive_handle();
     }
 
 }
