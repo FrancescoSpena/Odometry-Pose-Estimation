@@ -16,12 +16,12 @@
 #include <string.h>
 #include "packet_structure.h"
 #include "beth_comm_host.h"
+#include "math.h"
 
 
 #define BAUND1 19200
 
 volatile int flag_comm = 0;
-volatile int flag_info = 0;
 
 BethHost host;
 PacketHandler handler;
@@ -57,21 +57,15 @@ void* statusRoutine(void* host){
         printPacket(handler.current_packet,buf);
         printf("Received:\n %s\n",buf);
         
-        /*FILE* file;
+        FILE* file;
         file = fopen("data.txt","a");
         DifferentialDriveStatusPacket* status = (DifferentialDriveStatusPacket*)handler.current_packet;
-        if(status->odom_x == status->odom_x && status->odom_y == status->odom_y){
+        if(!isnan(status->odom_x) && !isnan(status->odom_y)){
             float x = status->odom_x;
             float y = status->odom_y;
-
             fprintf(file,"%f %f\n",x,y);
-
         }
-
-        fclose(file);*/
-        
-
-        flag_info = 1;
+        fclose(file);
         usleep(10000);
     }
 }
@@ -90,7 +84,7 @@ void* readJoystickRoutine(void* _fd){
         int center = readJoystick(fd,BUTTON_X,&v_c);
         if(left == 0){
             v_x_norm = -((float)v_x) / 32767;
-            packet.translational_velocity=v_x_norm*150; 
+            packet.translational_velocity=v_x_norm*255; 
         }
         if(right == 0){
             v_y_norm = ((float)v_y) / 32767;
@@ -144,7 +138,7 @@ int main(void){
     while(1){
         if(flag_comm){
             BethHost_sendPacket(&host,&packet.h);
-            //printPacketSend(&packet.h);
+            printPacketSend(&packet.h);
             flag_comm = 0;  
         }
     }

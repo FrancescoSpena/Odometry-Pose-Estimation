@@ -5,9 +5,6 @@ Odometry Internal API
 #pragma once
 
 typedef struct Odometry{
-    float x_k;
-    float y_k;
-    float theta_k;
     float T_s;
     float v_k;
     float omega_k;

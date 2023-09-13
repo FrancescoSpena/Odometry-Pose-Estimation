@@ -15,42 +15,34 @@
 #include "../common/beth_comm.h"
 #include "../beth_firmware/odometry.h"
 
-#define COMMON
-
 volatile uint8_t comm_flag=0;
 
-#ifdef COMMON
 void timerCommFn(void) {
-  comm_flag=1;
+    comm_flag=1;
 }
 
 void commFn(void){
+    //common
     BethComm_handle();
-    //BethComm_sendPacket(&drive_control.h);
     BethComm_sendPacket(&drive_status.h);
-    //BethComm_sendPacket(&drive_params.h);
+    //platform
+    BethDrive_handle();
     comm_flag = 0;
 }
-#endif
-
 
 int main(void){
     Odometry_init(0.01);
     BethJoints_init();
     BethComm_init();
-    #ifdef COMMON
     Timer_init();
 
     struct Timer* timer_comm=Timer_create(10, (void*)&timerCommFn, 0);
     Timer_start(timer_comm);
-    #endif
 
     while(1){
-        #ifdef COMMON
-        if(comm_flag)
+        if(comm_flag){
             commFn();
-            BethDrive_handle();
-        #endif
+        }
     }
 
 }

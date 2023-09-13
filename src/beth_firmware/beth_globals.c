@@ -164,9 +164,9 @@ DifferentialDriveStatusPacket drive_status = {
         .dest_addr=0,
         .checksum=0,
     },
-    .odom_x=0,
-    .odom_y=0,
-    .odom_theta=0,
+    .odom_x=0.f,
+    .odom_y=0.f,
+    .odom_theta=0.f,
 };
 
 //Operations
