@@ -52,7 +52,6 @@ void* statusRoutine(void* host){
             }
         }
         status=UnknownType;
-        //BethComm_receiveFn(handler.current_packet,0);
         char buf[256];
         printPacket(handler.current_packet,buf);
         printf("Received:\n %s\n",buf);
@@ -88,7 +87,7 @@ void* readJoystickRoutine(void* _fd){
         }
         if(right == 0){
             v_y_norm = ((float)v_y) / 32767;
-            packet.rotational_velocity=v_y_norm*4; 
+            packet.rotational_velocity=v_y_norm*5; 
         }
         if(center == 0){
             packet.translational_velocity = 0;
@@ -129,8 +128,8 @@ int main(void){
         return 0;
     }
     
-    pthread_t leggo;
-    pthread_create(&leggo,NULL,&statusRoutine,&host);
+    //pthread_t leggo;
+    //pthread_create(&leggo,NULL,&statusRoutine,&host);
     pthread_t thread_read_joystick;
     pthread_create(&thread_read_joystick,NULL,&readJoystickRoutine,&fd_joy);
 
