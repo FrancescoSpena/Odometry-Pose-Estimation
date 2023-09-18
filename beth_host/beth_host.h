@@ -5,7 +5,7 @@
 
 typedef struct{
     PacketHandler ph;  //packet handler
-    int serial_fd; //uart fd
+    int serial_fd; //serial fd
 }BethHost;
 
 void BethHost_init(BethHost*, char* dev, int speed);

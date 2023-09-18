@@ -1,31 +1,33 @@
+//Standard
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include "beth_host.h"
-#include "../src/common/print_packets.h"
-#include "../src/common/packet_operations.h"
-#include "../src/common/joystick.h"
 #include <pthread.h>
 #include <linux/joystick.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
-#include <semaphore.h>
-#include <ncurses.h>
-#include <string.h>
+
+//Platform
+#include "beth_host.h"
+#include "../src/common/print_packets.h"
+#include "../src/common/packet_operations.h"
+#include "../src/common/joystick.h"
 #include "packet_structure.h"
 #include "beth_comm_host.h"
+
+//Math
 #include "math.h"
 
-
+//Speed Serial
 #define BAUND1 19200
 
+//Global variable 
 volatile int flag_comm = 0;
-
 BethHost host;
-PacketHandler handler;
 
+//Packet control
 DifferentialDriveControlPacket packet = {
     {
         .id=DIFFERENTIAL_DRIVE_CONTROL_PACKET,
@@ -38,6 +40,7 @@ DifferentialDriveControlPacket packet = {
     .rotational_velocity=0,
 };
 
+//Function to read a serial
 void* statusRoutine(void* host){
     BethHost* hos = (BethHost*)host;
     int fd = hos->serial_fd;
@@ -48,17 +51,17 @@ void* statusRoutine(void* host){
         while(status != ChecksumSuccess){
             n = read(fd,&c,1);
             if(n){
-                status = PacketHandler_readByte(&handler,c);
+                status = PacketHandler_readByte(&hos->ph,c);
             }
         }
         status=UnknownType;
         char buf[256];
-        printPacket(handler.current_packet,buf);
+        printPacket(hos->ph.current_packet,buf);
         printf("Received:\n %s\n",buf);
         
         FILE* file;
         file = fopen("data.txt","a");
-        DifferentialDriveStatusPacket* status = (DifferentialDriveStatusPacket*)handler.current_packet;
+        DifferentialDriveStatusPacket* status = (DifferentialDriveStatusPacket*)hos->ph.current_packet;
         if(!isnan(status->odom_x) && !isnan(status->odom_y)){
             float x = status->odom_x;
             float y = status->odom_y;
@@ -70,6 +73,7 @@ void* statusRoutine(void* host){
 }
 
 
+//Function to read joystick and make a packet
 void* readJoystickRoutine(void* _fd){
     int fd = *(int*)_fd;
     int v_x = 0;
@@ -98,19 +102,7 @@ void* readJoystickRoutine(void* _fd){
     }
 }
 
-void printInfo(void){
-    printf("------------------------------------------\n");
-    printf("Control Information:\n");
-    printf("Linear Speed:%d\t Rotational Speed:%d\n\n",
-                (int)drive_control.translational_velocity,(int)drive_control.rotational_velocity);
-    printf("Status Information:\n");
-    printf("Odometry X:%f\t Odometry Y:%f\t Odometry Z:%f\n\n",
-                drive_status.odom_x,drive_status.odom_y,drive_status.odom_theta);
-    printf("Params Information:\n");
-    printf("Distance:%f\t Radius:%f\n",
-                drive_params.distance,drive_params.radius_wheel);
-}
-
+//Function to print a packet
 void printPacketSend(PacketHeader* h){
     char buf[256];
     printPacket(h,buf);
@@ -118,27 +110,30 @@ void printPacketSend(PacketHeader* h){
     return;
 }
 
+//MAIN
 int main(void){
+    //Init Host and Handler
     BethHost_init(&host,"/dev/ttyACM0",BAUND1);
-    PacketHandler_init(&handler);
+    //Open Joystick
     int fd_joy = openJoystick("/dev/input/js1");
 
     if(fd_joy < 0){
-        printf("joystick non disponibile, collegare un dispositivo funzionante\n");
+        printf("Joystick non disponibile\n");
         return 0;
     }
     
+    //Create thread for read serial and joystick
     pthread_t leggo;
     pthread_create(&leggo,NULL,&statusRoutine,&host);
     pthread_t thread_read_joystick;
     pthread_create(&thread_read_joystick,NULL,&readJoystickRoutine,&fd_joy);
 
-
+    //Send packet at 100Hz
     while(1){
         if(flag_comm){
             BethHost_sendPacket(&host,&packet.h);
-            //printPacketSend(&packet.h);
             flag_comm = 0;  
         }
     }
+    return 0;
 }

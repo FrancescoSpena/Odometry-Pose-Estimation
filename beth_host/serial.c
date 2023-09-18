@@ -43,7 +43,7 @@ int setupSerial(char* device, int speed){
     int fd = open(device, O_RDWR | O_NOCTTY | O_SYNC);
 
     if(fd < 0){
-        printf("Error %d opening %d\n",errno,fd);
+        printf("[Error %d opening %d]Arduino non disponibile\n",errno,fd);
         return -1;
     }
     if(setupTermios(fd,speed,0)){

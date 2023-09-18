@@ -6,6 +6,6 @@ OBJS += ../../beth_host/packet_structure.c ../../beth_host/beth_comm_host.c
 OBJS += ../../src/common/packet_handler.c ../../src/common/print_packets.c ../../src/common/joystick.c
 
 main: $(OBJS) 
-	gcc -Wall -Og -o host $(OBJS) -lncurses -lpanel
+	gcc -Wall -O2 -o host $(OBJS) 
 clean:
 	rm host
