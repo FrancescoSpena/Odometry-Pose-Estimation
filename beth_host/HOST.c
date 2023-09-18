@@ -87,7 +87,7 @@ void* readJoystickRoutine(void* _fd){
         }
         if(right == 0){
             v_y_norm = ((float)v_y) / 32767;
-            packet.rotational_velocity=v_y_norm*5; 
+            packet.rotational_velocity=v_y_norm*7; 
         }
         if(center == 0){
             packet.translational_velocity = 0;
@@ -128,8 +128,8 @@ int main(void){
         return 0;
     }
     
-    //pthread_t leggo;
-    //pthread_create(&leggo,NULL,&statusRoutine,&host);
+    pthread_t leggo;
+    pthread_create(&leggo,NULL,&statusRoutine,&host);
     pthread_t thread_read_joystick;
     pthread_create(&thread_read_joystick,NULL,&readJoystickRoutine,&fd_joy);
 
@@ -137,7 +137,7 @@ int main(void){
     while(1){
         if(flag_comm){
             BethHost_sendPacket(&host,&packet.h);
-            printPacketSend(&packet.h);
+            //printPacketSend(&packet.h);
             flag_comm = 0;  
         }
     }

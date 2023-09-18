@@ -24,14 +24,14 @@ void timerCommFn(void) {
 void commFn(void){
     //common
     BethComm_handle();
-    //BethComm_sendPacket(&drive_status.h);
+    BethComm_sendPacket(&drive_status.h);
     //platform
     BethDrive_handle();
     comm_flag = 0;
 }
 
 int main(void){
-    Odometry_init(0.01);
+    Odometry_init(10/1000);
     BethJoints_init();
     BethComm_init();
     Timer_init();
