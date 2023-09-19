@@ -25,8 +25,6 @@ void commFn(void){
     //common
     BethComm_handle();
     BethComm_sendPacket(&drive_status.h);
-    //platform
-    BethDrive_handle();
     comm_flag = 0;
 }
 
@@ -42,6 +40,8 @@ int main(void){
     while(1){
         if(comm_flag){
             commFn();
+            //platform
+            BethDrive_handle();
         }
     }
 

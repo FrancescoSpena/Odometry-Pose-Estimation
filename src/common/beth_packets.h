@@ -27,7 +27,6 @@ typedef enum{
 typedef struct{
     uint8_t id;
     uint8_t size;
-    uint16_t seq;
     uint8_t dest_addr;
     uint8_t checksum;
 }PacketHeader;

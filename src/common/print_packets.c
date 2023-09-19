@@ -2,10 +2,9 @@
 #include <stdio.h>
 
 uint16_t printHeader(PacketHeader* h, char* buf){
-    return sprintf(buf,"[id: %d size:%d seq:%d dest:%d cs:%d]",
+    return sprintf(buf,"[id: %d size:%d dest:%d cs:%d]",
     h->id,
     h->size,
-    h->seq,
     h->dest_addr,
     h->checksum);
 }

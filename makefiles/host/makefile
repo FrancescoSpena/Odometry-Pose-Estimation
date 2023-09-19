@@ -8,4 +8,4 @@ OBJS += ../../src/common/packet_handler.c ../../src/common/print_packets.c ../..
 main: $(OBJS) 
 	gcc -Wall -O2 -o host $(OBJS) 
 clean:
-	rm host
+	rm host data.txt

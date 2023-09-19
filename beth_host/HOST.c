@@ -22,6 +22,8 @@
 
 //Speed Serial
 #define BAUND1 19200
+#define SAVE_DATA
+
 
 //Global variable 
 volatile int flag_comm = 0;
@@ -32,7 +34,6 @@ DifferentialDriveControlPacket packet = {
     {
         .id=DIFFERENTIAL_DRIVE_CONTROL_PACKET,
         .size=sizeof(DifferentialDriveControlPacket),
-        .seq=0,
         .dest_addr=0,
         .checksum=0,
     },
@@ -59,6 +60,7 @@ void* statusRoutine(void* host){
         printPacket(hos->ph.current_packet,buf);
         printf("Received:\n %s\n",buf);
         
+        #ifdef SAVE_DATA
         FILE* file;
         file = fopen("data.txt","a");
         DifferentialDriveStatusPacket* status = (DifferentialDriveStatusPacket*)hos->ph.current_packet;
@@ -68,10 +70,10 @@ void* statusRoutine(void* host){
             fprintf(file,"%f %f\n",x,y);
         }
         fclose(file);
+        #endif
         usleep(10000);
     }
 }
-
 
 //Function to read joystick and make a packet
 void* readJoystickRoutine(void* _fd){
@@ -87,7 +89,7 @@ void* readJoystickRoutine(void* _fd){
         int center = readJoystick(fd,BUTTON_X,&v_c);
         if(left == 0){
             v_x_norm = -((float)v_x) / 32767;
-            packet.translational_velocity=v_x_norm*255; 
+            packet.translational_velocity=v_x_norm*2; 
         }
         if(right == 0){
             v_y_norm = ((float)v_y) / 32767;

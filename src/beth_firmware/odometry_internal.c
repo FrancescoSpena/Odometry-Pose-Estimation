@@ -10,85 +10,78 @@ void OdometryInit_int(Odometry* o, float Ts){
     o->v_k = 0;
     o->delta_s = 0;
     o->delta_theta = 0;
-    o->val_left_prec_enc = 0;
-    o->val_right_prec_enc = 0;
-
-    drive_status.odom_x = 0;
-    drive_status.odom_y = 0;
-    drive_status.odom_theta = 0;
-
+    o->encoder_left_prev = 0;
+    o->encoder_right_prev = 0;
     return;
 }
 
-void OdometryPredict(Odometry* o){
-    //value in m 
-    float r = drive_params.radius_wheel / 100;
-    float d = drive_params.distance / 100;
-    float k = 0.021;
+static const float cos_coeffs[]={0., 0.5 ,  0.    ,   -1.0/24.0,   0.    , 1.0/720.0};
+static const float sin_coeffs[]={1., 0.  , -1./6. ,      0.    ,   1./120, 0.   };
 
-    //ticks/s 
-    int16_t delta_r = motor2_status.measured_speed;
-    int16_t delta_l = motor1_status.measured_speed;
 
-    //ticks / s
-    float delta_puro_r = (float)(delta_r / o->T_s);
-    float delta_puro_l = (float)(delta_l / o->T_s);
-    
-    //convert to m/s
-    delta_puro_r *= k;
-    delta_puro_l *= k;
-
-    //equation
-    float summ_enc = delta_puro_r + delta_puro_l;
-    float diff_enc = delta_puro_r - delta_puro_l;
-
-    o->delta_s = (r / 2) * summ_enc;
-    o->delta_theta = (r / d) * diff_enc;
-
-    o->v_k = (o->delta_s / o->T_s);
-    o->omega_k = (o->delta_theta / o->T_s);
-
-    if(o->omega_k < 0.1) o->omega_k = 0;
-
-    return;
+// computes the terms of sin(theta)/thera and (1-cos(theta))/theta
+// using taylor expansion
+static void _computeThetaTerms(float* sin_theta_over_theta,
+                               float* one_minus_cos_theta_over_theta,
+                               float theta) {
+  // evaluates the taylor expansion of sin(x)/x and (1-cos(x))/x,
+  // where the linearization point is x=0, and the functions are evaluated
+  // in x=theta
+  *sin_theta_over_theta=0;
+  *one_minus_cos_theta_over_theta=0;
+  float theta_acc=1;
+  for (uint8_t i=0; i<6; i++) {
+    if (i&0x1)
+      *one_minus_cos_theta_over_theta+=theta_acc*cos_coeffs[i];
+    else 
+      *sin_theta_over_theta+=theta_acc*sin_coeffs[i];
+    theta_acc*=theta;
+  }
 }
+
 
 void OdometryHandle_int(Odometry* o){
-    //Predict value of v_k and omega_k
-    OdometryPredict(o);
+    //baseline
+    float b = drive_params.distance;
+    
+    //factor wheel 
+    float k = 0.0004491656163220702;
+    
+    
+    int16_t left_ticks=motor1_status.measured_speed;
+    int16_t right_ticks=motor2_status.measured_speed;
+    
+    
 
-    //Eulero
-    if(o->omega_k == 0){
-        float sin_k = sin(drive_status.odom_theta);
-        float cos_k = cos(drive_status.odom_theta);
-        drive_status.odom_x = drive_status.odom_x + (o->v_k * o->T_s * cos_k);
-        drive_status.odom_y = drive_status.odom_y + (o->v_k * o->T_s * sin_k);
-        drive_status.odom_theta = drive_status.odom_theta + (o->omega_k * o->T_s);
-    }else{
-        //cos(k) sin(k)
-        float sin_k = sin(drive_status.odom_theta);
-        float cos_k = cos(drive_status.odom_theta);
+    
+    if(left_ticks != 0 || right_ticks != 0){
+        //left and right motion
+        float delta_l = k * left_ticks;
+        float delta_r = k * right_ticks;
 
-        //theta(k+1)
-        drive_status.odom_theta = drive_status.odom_theta + o->omega_k*o->T_s;
+        float delta_plus=delta_r+delta_l;
+        float delta_minus=delta_r-delta_l;
+        float dth= delta_minus * b;
+        float one_minus_cos_theta_over_theta, sin_theta_over_theta;
+        _computeThetaTerms(&sin_theta_over_theta, &one_minus_cos_theta_over_theta, dth);
+        float dx=.5*delta_plus*sin_theta_over_theta;
+        float dy=.5*delta_plus*one_minus_cos_theta_over_theta;
 
-        //cos(k+1) sin(k+1)
-        float sin_k1 = sin(drive_status.odom_theta);
-        float cos_k1 = cos(drive_status.odom_theta);
-
-        /*
-        sin(k+1) - sin(k)
-        cos(k+1) - cos(k)
-        */
-        float diff_sin = sin_k1 - sin_k;
-        float diff_cos = cos_k1 - cos_k;
-
-        //v_k / omega_k
-        float fract = o->v_k / o->omega_k;
-
-        //update X and Y 
-        drive_status.odom_x = drive_status.odom_x + (fract * diff_sin);
-        drive_status.odom_y = drive_status.odom_y - (fract * diff_cos);
+        //apply the increment to the previous estimate
+        float s=sin(drive_status.odom_theta);
+        float c=cos(drive_status.odom_theta);
+        drive_status.odom_x+=c*dx-s*dy;
+        drive_status.odom_y+=s*dx+c*dy;
+        drive_status.odom_theta+=dth;
+        // normallize theta;
+        if (drive_status.odom_theta>M_PI){
+            drive_status.odom_theta-=2*M_PI;
+        }
+        else if (drive_status.odom_theta<-M_PI){
+            drive_status.odom_theta+=2*M_PI;
+        }
     }
+    
+    
     return;
 }

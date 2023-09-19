@@ -1,14 +1,13 @@
 #include "packet_structure.h"
 #include "beth_comm_host.h"
 
-PacketHeader* header;
+//PacketHeader* header;
 
 MotorControlPacket motor1_control = {
     //header
     {
         .id=ID_MOTOR_CONTROL_PACKET,
         .size=sizeof(motor1_control),
-        .seq=0,
         .dest_addr=0,
         .checksum=0,
     },
@@ -21,7 +20,6 @@ MotorStatusPacket motor1_status = {
     {
         .id=ID_MOTOR_STATUS_PACKET,
         .size=sizeof(motor1_status),
-        .seq=0,
         .dest_addr=0,
         .checksum=0,
     },
@@ -35,7 +33,6 @@ MotorParamsPacket motor1_params = {
     {
         .id=ID_MOTOR_PARAMS_PACKET,
         .size=sizeof(motor1_params),
-        .seq=0,
         .dest_addr=0,
         .checksum=0,
     },
@@ -58,7 +55,6 @@ MotorControlPacket motor2_control = {
     {
         .id=ID_MOTOR_CONTROL_PACKET,
         .size=sizeof(motor2_control),
-        .seq=0,
         .dest_addr=0,
         .checksum=0,
     },
@@ -71,7 +67,6 @@ MotorStatusPacket motor2_status = {
     {
         .id=ID_MOTOR_STATUS_PACKET,
         .size=sizeof(motor2_status),
-        .seq=0,
         .dest_addr=0,
         .checksum=0,
     },
@@ -85,7 +80,6 @@ MotorParamsPacket motor2_params = {
     {
         .id=ID_MOTOR_PARAMS_PACKET,
         .size=sizeof(motor2_params),
-        .seq=0,
         .dest_addr=0,
         .checksum=0,
     },
@@ -107,7 +101,6 @@ SystemStatusPacket system_status = {
     {
         .id=ID_SYSTEM_STATUS_PACKET,
         .size=sizeof(system_status),
-        .seq=0,
         .dest_addr=0,
         .checksum=0,
     },
@@ -121,7 +114,6 @@ DifferentialDriveParamPacket drive_params = {
     {
         .id=DIFFERENTIAL_DRIVE_PARAMS_PACKET,
         .size=sizeof(drive_params),
-        .seq=0,
         .dest_addr=0,
         .checksum=0,
     },
@@ -136,7 +128,6 @@ DifferentialDriveControlPacket drive_control = {
     {
         .id=DIFFERENTIAL_DRIVE_CONTROL_PACKET,
         .size=sizeof(drive_control),
-        .seq=0,
         .dest_addr=0,
         .checksum=0,
     },
@@ -148,7 +139,6 @@ DifferentialDriveStatusPacket drive_status = {
     {
         .id=DIFFERENTIAL_DRIVE_STATUS_PACKET,
         .size=sizeof(drive_status),
-        .seq=0,
         .dest_addr=0,
         .checksum=0,
     },
@@ -157,57 +147,3 @@ DifferentialDriveStatusPacket drive_status = {
     .odom_theta=0,
 };
 
-//Operations
-
-//Motor control packet
-PacketOperation motor_control_op = {
-    .id=ID_MOTOR_CONTROL_PACKET,
-    .size=sizeof(MotorControlPacket),
-    .on_receive_fn=BethComm_receiveFn,
-    .args=&header,
-};
-
-//Motor status packet
-PacketOperation motor_status_op = {
-    .id=ID_MOTOR_STATUS_PACKET,
-    .size=sizeof(MotorStatusPacket),
-    .on_receive_fn=BethComm_receiveFn,
-    .args=&header,
-};
-
-//Motor params packet
-PacketOperation motor_params_op = {
-    .id=ID_MOTOR_PARAMS_PACKET,
-    .size=sizeof(MotorParamsPacket),
-    .on_receive_fn=BethComm_receiveFn,
-    .args=&header,
-};
-
-//System status packet
-PacketOperation system_status_op = {
-    .id=ID_SYSTEM_STATUS_PACKET,
-    .size=sizeof(SystemStatusPacket),
-    .on_receive_fn=BethComm_receiveFn,
-    .args=&header,
-};
-//Differential Drive Param Packet
-PacketOperation diff_drive_params_op = {
-    .id=DIFFERENTIAL_DRIVE_PARAMS_PACKET,
-    .size=sizeof(DifferentialDriveParamPacket),
-    .on_receive_fn=BethComm_receiveFn,
-    .args=&header,
-};
-//Differential Drive Control Packet
-PacketOperation diff_drive_control_op = {
-    .id=DIFFERENTIAL_DRIVE_CONTROL_PACKET,
-    .size=sizeof(DifferentialDriveControlPacket),
-    .on_receive_fn=BethComm_receiveFn,
-    .args=&header,
-};
-//Differential Drive Status Packet
-PacketOperation diff_drive_status_op = {
-    .id=DIFFERENTIAL_DRIVE_STATUS_PACKET,
-    .size=sizeof(DifferentialDriveStatusPacket),
-    .on_receive_fn=BethComm_receiveFn,
-    .args=&header,
-};

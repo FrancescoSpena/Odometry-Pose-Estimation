@@ -14,8 +14,8 @@ typedef struct Odometry{
     float delta_theta;
 
     //internal 
-    uint16_t val_right_prec_enc;
-    uint16_t val_left_prec_enc;
+    uint16_t encoder_left_prev;
+    uint16_t encoder_right_prev;
 }Odometry;
 
 //Inizialize the structure

@@ -15,7 +15,6 @@ MotorControlPacket motor1_control = {
     {
         .id=ID_MOTOR_CONTROL_PACKET,
         .size=sizeof(motor1_control),
-        .seq=0,
         .dest_addr=0,
         .checksum=0,
     },
@@ -28,7 +27,6 @@ MotorControlPacket motor2_control = {
     {
         .id=ID_MOTOR_CONTROL_PACKET,
         .size=sizeof(motor2_control),
-        .seq=0,
         .dest_addr=0,
         .checksum=0,
     },
@@ -43,7 +41,6 @@ MotorStatusPacket motor1_status = {
     {
         .id=ID_MOTOR_STATUS_PACKET,
         .size=sizeof(motor1_status),
-        .seq=0,
         .dest_addr=0,
         .checksum=0,
     },
@@ -57,7 +54,6 @@ MotorStatusPacket motor2_status = {
     {
         .id=ID_MOTOR_STATUS_PACKET,
         .size=sizeof(motor2_status),
-        .seq=0,
         .dest_addr=0,
         .checksum=0,
     },
@@ -73,7 +69,6 @@ MotorParamsPacket motor1_params = {
     {
         .id=ID_MOTOR_PARAMS_PACKET,
         .size=sizeof(motor1_params),
-        .seq=0,
         .dest_addr=0,
         .checksum=0,
     },
@@ -96,7 +91,6 @@ MotorParamsPacket motor2_params = {
     {
         .id=ID_MOTOR_PARAMS_PACKET,
         .size=sizeof(motor2_params),
-        .seq=0,
         .dest_addr=0,
         .checksum=0,
     },
@@ -118,7 +112,6 @@ SystemStatusPacket system_status = {
     {
         .id=ID_SYSTEM_STATUS_PACKET,
         .size=sizeof(system_status),
-        .seq=0,
         .dest_addr=0,
         .checksum=0,
     },
@@ -132,13 +125,12 @@ DifferentialDriveParamPacket drive_params = {
     {
         .id=DIFFERENTIAL_DRIVE_PARAMS_PACKET,
         .size=sizeof(drive_params),
-        .seq=0,
         .dest_addr=0,
         .checksum=0,
     },
     //value in m 
-    .distance=42,  //42 cm 
-    .radius_wheel=14 //14 cm 
+    .distance=0.42,  
+    .radius_wheel=0.14 
 };
 
 //dest_addr = 0 --> motor 1 
@@ -148,7 +140,6 @@ DifferentialDriveControlPacket drive_control = {
     {
         .id=DIFFERENTIAL_DRIVE_CONTROL_PACKET,
         .size=sizeof(drive_control),
-        .seq=0,
         .dest_addr=0,
         .checksum=0,
     },
@@ -160,7 +151,6 @@ DifferentialDriveStatusPacket drive_status = {
     {
         .id=DIFFERENTIAL_DRIVE_STATUS_PACKET,
         .size=sizeof(drive_status),
-        .seq=0,
         .dest_addr=0,
         .checksum=0,
     },
