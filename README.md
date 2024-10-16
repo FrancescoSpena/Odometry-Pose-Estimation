@@ -35,7 +35,7 @@ Where:
   <img src="img/third.png" alt="third" width="30%" />
 </p>
 
-The factor k_s converts from ticks/s to m/s. This factor can be computed by knowing the motor gear ratio and the CPR (20.4:1 and 48 CPR, respectively).
+The factor k_r and k_l converts from ticks/s to m/s. This factor can be computed by knowing the motor gear ratio and the CPR (20.4:1 and 48 CPR, respectively).
 ## Results 
 
 This simple project demonstrates that the method accumulates drift incrementally due to an initial error in the system setup and the absence of any feedback mechanism to compensate for it. To improve accuracy, a Kalman filter or another feedback-based approach could be implemented.
