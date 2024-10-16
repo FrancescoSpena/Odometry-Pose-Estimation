@@ -13,25 +13,26 @@ In the photos, we can see the structure of the robot and the pose estimation, re
 
 We aim to estimate the pose of the robot, described by the following equations:
 
-<p align="center">
+<p align="left">
   <img src="img/second.png" alt="first" width="30%" />
 </p>
 
 For small angles, we can approximate this equation using a Taylor expansion, yielding:
 
-<p align="center">
-  <img src="img/taylor.png" alt="taylor" width="30%" />
+<p align="left">
+  <img src="img/taylor.png" alt="taylor" width="40%" />
 </p>
 
 We then rewrite the system in this form:
 
-<p align="center">
-  <img src="img/first.png" alt="second" width="30%" />
+<p align="left">
+  <img src="img/first.png" alt="second" width="23%" />
+  <img src="img/right.png" alt="second" width="30%" />
 </p>
 
 Where:
 
-<p align="center">
+<p align="left">
   <img src="img/third.png" alt="third" width="30%" />
 </p>
 
