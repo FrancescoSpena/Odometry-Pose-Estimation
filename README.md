@@ -39,7 +39,7 @@ Where:
 The factor k_r and k_l converts from ticks/s to m/s. This factor can be computed by knowing the motor gear ratio and the CPR (20.4:1 and 48 CPR, respectively).
 ## Results 
 
-This simple project demonstrates that the method accumulates drift incrementally due to an initial error in the system setup and the absence of any feedback mechanism to compensate for it. To improve accuracy, a Kalman filter or another feedback-based approach could be implemented.
+This simple project demonstrates that the method accumulates drift incrementally due to an initial error in the system setup and the absence of any feedback mechanism to compensate for it. To improve accuracy, a [Kalman filter](https://github.com/FrancescoSpena/EKF-Pose-Estimation/tree/main) or another feedback-based approach could be implemented.
 
 
 
